@@ -3,6 +3,9 @@ package main;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import fileio.CommandInput;
+import fileio.InputLoader;
+import fileio.UserInput;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +39,9 @@ public class App {
             however you can use some of the more advanced features of
             jackson library, available here: https://www.baeldung.com/jackson-annotations
         */
+        InputLoader loader = new InputLoader(inputPath);
+        List<UserInput> users = loader.getUsers();
+        List<CommandInput> commands = loader.getCommands();
 
         // TODO 2: process commands.
 
