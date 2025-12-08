@@ -11,10 +11,9 @@ public class Bug extends Ticket {
     private Severity severity;
     private String environment;
     private int errorCode;
-    private String createdAt;
 
-    public Bug() {
-        super();
+    public Bug(String createdAt) {
+        super(createdAt, createdAt);
         this.setType(TicketType.BUG);
     }
 

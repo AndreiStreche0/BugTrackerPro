@@ -22,12 +22,12 @@ public class FactoryService {
         return INSTANCE;
     }
 
-    public Ticket createTicket(String type, Map<String, Object> attributes) {
+    public Ticket createTicket(String type, Map<String, Object> attributes, String timestamp) {
         TicketFactory factory = ticketFactories.get(type);
 
         if (factory == null) {
             throw new IllegalArgumentException("Wrong ticket type: " + type);
         }
-        return factory.createTicket(attributes, this.id++);
+        return factory.createTicket(attributes, this.id++, timestamp);
     }
 }

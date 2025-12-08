@@ -4,6 +4,7 @@ import enums.BusinessPriority;
 import enums.ExpertiseArea;
 import enums.TicketStatus;
 import enums.TicketType;
+import users.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,10 +19,29 @@ public abstract class Ticket {
     private String createdAt;
     private String updatedAt;
     private String reportedBy;
+    private String solvedAt;
+    private String assignedAt;
+    private User assignedTo;
     private TicketStatus state;
     private TicketType type;
 
     //private List<Comment> comments = new ArrayList<>();
+
+    public String getSolvedAt() {
+        return solvedAt;
+    }
+
+    public String getAssignedAt() {
+        return assignedAt;
+    }
+
+    public void setAssignedAt(String assignedAt) {
+        this.assignedAt = assignedAt;
+    }
+
+    public void setSolvedAt(String solvedAt) {
+        this.solvedAt = solvedAt;
+    }
 
     public int getId() {
         return id;
@@ -41,6 +61,14 @@ public abstract class Ticket {
 
     public String getDescription() {
         return description;
+    }
+
+    public User getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(User assignedTo) {
+        this.assignedTo = assignedTo;
     }
 
     public void setDescription(String description) {
@@ -103,9 +131,11 @@ public abstract class Ticket {
         this.type = type;
     }
 
-    public Ticket() {
-        //this.state = new OpenState();
-        this.createdAt = LocalDate.now();
-        this.updatedAt = LocalDate.now();
+    public Ticket(String createdAt, String updatedAt) {
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+    public Object getComments() {
+        return null;
     }
 }

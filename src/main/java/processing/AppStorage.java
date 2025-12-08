@@ -1,5 +1,6 @@
 package processing;
 
+import enums.AppPhase;
 import factory.UserFactory;
 import fileio.UserInput;
 import main.App;
@@ -13,6 +14,7 @@ public class AppStorage {
     private final static AppStorage INSTANCE = new AppStorage();
     private final List<Ticket> tickets = new ArrayList<>();
     private List<User> users = new ArrayList<>();
+    private AppPhase appPhase;
     private AppStorage() {}
 
     public static AppStorage getInstance() {
@@ -22,6 +24,15 @@ public class AppStorage {
         ticket.setId(tickets.size());
         tickets.add(ticket);
     }
+
+    public AppPhase getAppPhase() {
+        return appPhase;
+    }
+
+    public void setAppPhase(AppPhase appPhase) {
+        this.appPhase = appPhase;
+    }
+
     public void loadUsers(List<UserInput> inputs) {
         for (UserInput input : inputs) {
             User newUser = UserFactory.createUser(input);

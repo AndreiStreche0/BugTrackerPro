@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import fileio.CommandInput;
 import fileio.InputLoader;
 import fileio.UserInput;
+import processing.Brain;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,11 +43,11 @@ public class App {
         InputLoader loader = new InputLoader(inputPath);
         List<UserInput> users = loader.getUsers();
         List<CommandInput> commands = loader.getCommands();
-
+        Brain appBrain = new Brain(commands, users);
         // TODO 2: process commands.
 
         // TODO 3: create objectnodes for output, add them to outputs list.
-
+        outputs = appBrain.parseCommands();
         // DO NOT CHANGE THIS SECTION IN ANY WAY
         try {
             File outputFile = new File(outputPath);

@@ -29,5 +29,5 @@ public abstract class Command implements ExecuteCommands{
         return timestamp;
     }
 
-    public abstract ObjectNode execute();
+    public abstract ObjectNode execute(boolean correctPhase);
 }

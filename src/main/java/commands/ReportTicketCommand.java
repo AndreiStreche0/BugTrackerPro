@@ -20,40 +20,45 @@ public class ReportTicketCommand extends Command{
     private final FactoryService ticketService;
     private final ObjectMapper mapper;
     private AppStorage appStorage;
-    private AppPhase appPhase;
-    public ReportTicketCommand(String username, String timestamp, Map<String, Object> params, AppPhase appPhase) {
+    public ReportTicketCommand(String username, String timestamp, Map<String, Object> params) {
         super("reportTicket", username, timestamp);
         this.ticketParameters = params;
         this.ticketService = FactoryService.getInstance();
         this.mapper = new ObjectMapper();
         this.appStorage = AppStorage.getInstance();
-        this.appPhase = appPhase;
     }
-    public ObjectNode execute() {
-        Ticket newTicket = ticketService.createTicket((String) ticketParameters.get("type"), ticketParameters);
+
+    private ObjectNode createErrorNode(String message) {
+        ObjectNode output = mapper.createObjectNode();
+        output.put("command", "reportTicket");
+        output.put("username", super.getUsername());
+        output.put("timestamp", super.getTimestamp());
+        output.put("error", message);
+        return output;
+    }
+
+    public ObjectNode execute(boolean correctPhase) {
+        Ticket newTicket = ticketService.createTicket((String) ticketParameters.get("type"),
+                ticketParameters, super.getTimestamp());
         ObjectNode output = mapper.createObjectNode();
         if (super.getUsername() == null || appStorage.findUser(super.getUsername()) == null) {
-            output.put("error", "The user " + super.getUsername() + " doesn't exist.");
-            return output;
+            return createErrorNode("The user " + super.getUsername() + " does not exist.");
         }
         User currentUser = appStorage.findUser(super.getUsername());
         if (currentUser.getRole() != UserRole.REPORTER) {
-            output.put("error", "The user does not have permission to execute this command:" +
+            return createErrorNode("The user does not have permission to execute this command:" +
                     " required role Reporter; user role " + currentUser.getRole());
-            return output;
         }
-        if (appPhase != AppPhase.TESTING_PHASE) {
-            output.put("error", "Tickets can only be reported during testing phases.)";
-            return output;
+        if (!correctPhase) {
+            return createErrorNode("Tickets can only be reported during testing phases.");
         }
         String reporterName = (String) ticketParameters.get("reportedBy");
         if (reporterName != null && reporterName.isEmpty()) {
             if (newTicket.getType() == TicketType.BUG) {
-                newTicket.setReportedBy("ANONYMOUS");
+//                newTicket.setReportedBy("ANONYMOUS");
                 newTicket.setBusinessPriority(BusinessPriority.LOW);
             } else {
-                output.put("error", "Anonymous reports are only allowed for tickets of type BUG.");
-                return output;
+                return createErrorNode("Anonymous reports are only allowed for tickets of type BUG.");
             }
         }
         appStorage.addTicket(newTicket);

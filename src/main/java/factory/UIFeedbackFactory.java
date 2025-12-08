@@ -1,9 +1,6 @@
 package factory;
 
-import enums.BusinessPriority;
-import enums.BusinessValue;
-import enums.CustomerDemand;
-import enums.ExpertiseArea;
+import enums.*;
 import tickets.FeatureRequest;
 import tickets.Ticket;
 import tickets.UIFeedback;
@@ -12,8 +9,8 @@ import java.util.Map;
 
 public class UIFeedbackFactory implements TicketFactory{
     @Override
-    public Ticket createTicket(Map<String, Object> attributes, int id) {
-        UIFeedback uiFeedback= new UIFeedback();
+    public Ticket createTicket(Map<String, Object> attributes, int id, String timestamp) {
+        UIFeedback uiFeedback= new UIFeedback(timestamp);
 
         uiFeedback.setId(id);
         uiFeedback.setTitle((String) attributes.get("title"));
@@ -24,6 +21,7 @@ public class UIFeedbackFactory implements TicketFactory{
                 (String) attributes.get("expertiseArea")));
         uiFeedback.setReportedBy((String) attributes.get("reportedBy"));
         uiFeedback.setCreatedAt((String) attributes.get("timestamp"));
+        uiFeedback.setState(TicketStatus.OPEN);
 
         if(attributes.containsKey("uiElementId")) {
             uiFeedback.setUiElementId((String) attributes.get("uiElementId"));
@@ -38,6 +36,7 @@ public class UIFeedbackFactory implements TicketFactory{
         if(attributes.containsKey("suggestedFix")) {
             uiFeedback.setSuggestedFix((String) attributes.get("suggestedFix"));
         }
+        uiFeedback.setCreatedAt(timestamp);
 
         return uiFeedback;
     }

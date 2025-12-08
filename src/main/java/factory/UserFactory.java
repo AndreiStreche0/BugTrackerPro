@@ -13,9 +13,9 @@ public class UserFactory {
     public static User createUser(UserInput userInput) {
         String userRole = userInput.getRole();
         switch (userRole) {
-            case "Reporter":
+            case "REPORTER":
                 return new Reporter(userInput.getUsername(), userInput.getMail());
-            case "Developer":
+            case "DEVELOPER":
                 ExpertiseArea expertise = ExpertiseArea.getType(userInput.getExpertiseArea());
                 Seniority seniority = Seniority.getType(userInput.getSeniority());
                 if (expertise == null || seniority == null) {
@@ -24,7 +24,7 @@ public class UserFactory {
                 }
                 return new Developer(userInput.getUsername(), userInput.getMail(), expertise,
                         seniority, userInput.getHireDate());
-            case "Manager":
+            case "MANAGER":
                 return new Manager(userInput.getUsername(), userInput.getMail(),
                         userInput.getSubordinates(), userInput.getHireDate());
             default:

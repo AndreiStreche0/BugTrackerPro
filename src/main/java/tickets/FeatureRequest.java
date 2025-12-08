@@ -8,8 +8,8 @@ public class FeatureRequest extends Ticket {
     private BusinessValue businessValue;
     private CustomerDemand customerDemand;
 
-    public FeatureRequest() {
-        super();
+    public FeatureRequest(String createdAt) {
+        super(createdAt, createdAt);
         this.setType(TicketType.FEATURE_REQUEST);
     }
 

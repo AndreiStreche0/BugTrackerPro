@@ -3,5 +3,5 @@ package commands;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public interface ExecuteCommands {
-    ObjectNode execute();
+    ObjectNode execute(boolean correctPhase);
 }

@@ -1,9 +1,6 @@
 package factory;
 
-import enums.BusinessPriority;
-import enums.ExpertiseArea;
-import enums.Frequency;
-import enums.Severity;
+import enums.*;
 import tickets.Bug;
 import tickets.Ticket;
 
@@ -12,8 +9,8 @@ import java.util.Map;
 public class BugFactory implements TicketFactory {
 
     @Override
-    public Ticket createTicket(Map<String, Object> attributes, int id) {
-        Bug bug = new Bug();
+    public Ticket createTicket(Map<String, Object> attributes, int id, String timestamp) {
+        Bug bug = new Bug(timestamp);
 
         bug.setId(id);
         bug.setTitle((String) attributes.get("title"));
@@ -23,15 +20,16 @@ public class BugFactory implements TicketFactory {
         bug.setExpertiseArea(ExpertiseArea.valueOf(
                 (String) attributes.get("expertiseArea")));
         bug.setReportedBy((String) attributes.get("reportedBy"));
-        bug.setCreatedAt((String) attributes.get("timestamp"));
+        bug.setState(TicketStatus.OPEN);
         bug.setExpectedBehavior((String) attributes.get("expectedBehavior"));
         bug.setActualBehavior((String) attributes.get("actualBehavior"));
         bug.setFrequency(Frequency.valueOf((String) attributes.get("frequency")));
         bug.setSeverity(Severity.valueOf((String) attributes.get("severity")));
-        if ("".equals(attributes.get("reportedBy"))) {
-            bug.setReportedBy("ANONYMOUS");
-            bug.setBusinessPriority(BusinessPriority.LOW);
-        }
+//        if ("".equals(attributes.get("reportedBy"))) {
+//            bug.setReportedBy("ANONYMOUS");
+//            bug.setBusinessPriority(BusinessPriority.LOW);
+//        }
+        bug.setCreatedAt(timestamp);
 
         if (attributes.containsKey("environment")) {
             bug.setEnvironment((String) attributes.get("environment"));

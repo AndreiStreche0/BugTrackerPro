@@ -10,8 +10,8 @@ public class UIFeedback extends Ticket {
     private String screenshotUrl;
     private String suggestedFix;
 
-    public UIFeedback() {
-        super();
+    public UIFeedback(String createdAt) {
+        super(createdAt, createdAt);
         this.setType(TicketType.UI_FEEDBACK);
     }
 
