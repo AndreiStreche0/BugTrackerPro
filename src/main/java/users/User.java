@@ -1,11 +1,12 @@
 package users;
 
 import enums.UserRole;
+import notifications.Observer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class User {
+public abstract class User implements Observer {
     protected String username;
     protected String email;
     protected UserRole role;
@@ -29,7 +30,10 @@ public abstract class User {
     public String getEmail() {
         return email;
     }
-
+    @Override
+    public void update(String notification) {
+        this.notifications.add(notification);
+    }
     public void setEmail(String email) {
         this.email = email;
     }

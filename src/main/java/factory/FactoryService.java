@@ -21,7 +21,9 @@ public class FactoryService {
     public static FactoryService getInstance() {
         return INSTANCE;
     }
-
+    public void reset() {
+        this.id = 0;
+    }
     public Ticket createTicket(String type, Map<String, Object> attributes, String timestamp) {
         TicketFactory factory = ticketFactories.get(type);
 

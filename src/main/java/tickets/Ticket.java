@@ -1,9 +1,11 @@
 package tickets;
+import commands.Command;
 import enums.BusinessPriority;
 
 import enums.ExpertiseArea;
 import enums.TicketStatus;
 import enums.TicketType;
+import processing.Comment;
 import users.User;
 
 import java.time.LocalDate;
@@ -25,7 +27,7 @@ public abstract class Ticket {
     private TicketStatus state;
     private TicketType type;
 
-    //private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public String getSolvedAt() {
         return solvedAt;
@@ -41,6 +43,10 @@ public abstract class Ticket {
 
     public void setSolvedAt(String solvedAt) {
         this.solvedAt = solvedAt;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public int getId() {
@@ -135,7 +141,13 @@ public abstract class Ticket {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-    public Object getComments() {
-        return null;
+    public List<Comment> getComments() {
+        return this.comments;
+    }
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+    }
+    public void removeComment(Comment comment) {
+        this.comments.remove(comment);
     }
 }

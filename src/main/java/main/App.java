@@ -31,7 +31,10 @@ public class App {
      */
     public static void run(String inputPath, String outputPath) {
         // feel free to change this if needed (however keep 'outputs' variable name to be used for writing)
+
         List<ObjectNode> outputs = new ArrayList<>();
+        processing.AppStorage.getInstance().reset();
+        factory.FactoryService.getInstance().reset();
 
         /*
             TODO 1 :

@@ -3,7 +3,9 @@ package commands;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import enums.TicketStatus;
 import enums.UserRole;
+import milestones.Milestone;
 import processing.AppStorage;
 import tickets.Ticket;
 import users.User;
@@ -50,6 +52,17 @@ public class ViewTicketsCommand extends Command{
                     viewableTickets.add(ticket);
                 }
             }
+        } else {
+            for (Milestone milestone : appStorage.getMilestones()) {
+                if (milestone.getAssignedDevs().contains(user.getUsername())) {
+                    for (Integer tId : milestone.getTicketIds()) {
+                        Ticket ticket = appStorage.getTicket(tId);
+                        if (ticket.getState() == TicketStatus.OPEN) {
+                            viewableTickets.add(ticket);
+                        }
+                    }
+                }
+            }
         }
         viewableTickets.sort((t1, t2) -> {
             int dateComparison = t1.getCreatedAt().compareTo(t2.getCreatedAt());
@@ -80,11 +93,10 @@ public class ViewTicketsCommand extends Command{
 
             String reporter = ticket.getReportedBy();
             ticketNode.put("reportedBy", reporter == null ? "" : reporter);
-            if (ticket.getComments() == null) {
+            if (ticket.getComments() == null || ticket.getComments().isEmpty()) {
                 ticketNode.putArray("comments");
             } else {
-                //TODO
-//                ticketNode.set("comments", mapper.valueToTree(ticket.getComments()));
+                ticketNode.set("comments", mapper.valueToTree(ticket.getComments()));
             }
             ticketsOutput.add(ticketNode);
         }

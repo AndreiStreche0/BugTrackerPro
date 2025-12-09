@@ -26,7 +26,6 @@ public class DevelopmentPhaseState implements  StateSpecificActions{
     @Override
     public ObjectNode executeCommand(Command command) {
         if (!canExecuteThisPhase(command.getCommandName())) {
-
             return command.execute(false);
         }
         return command.execute(true);
