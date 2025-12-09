@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import enums.TicketStatus;
 import processing.AppStorage;
 import tickets.Ticket;
+import tickets.TicketHistory;
 import users.Developer;
 import users.User;
 
@@ -31,10 +32,13 @@ public class UndoAssignTicketCommand extends Command {
             output.put("error", "Only IN_PROGRESS tickets can be unassigned.");
             return output;
         }
+        TicketHistory history = TicketHistory.deAssigned(super.getUsername(), super.getTimestamp());
+        ticket.addHistory(history);
         ((Developer) user).removeAssignedTicket(ticket);
         ticket.setAssignedAt("");
         ticket.setAssignedTo(null);
         ticket.setState(TicketStatus.OPEN);
+
         return null;
     }
 }

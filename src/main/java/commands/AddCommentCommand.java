@@ -61,7 +61,7 @@ public class AddCommentCommand extends Command {
                 break;
             case UserRole.REPORTER:
                 if (ticket.getState() == TicketStatus.CLOSED) {
-                    return createErrorNode("Reporters cannot comment on closed tickets.");
+                    return createErrorNode("Reporters cannot comment on CLOSED tickets.");
                 }
                 if (!ticket.getReportedBy().equals(user.getUsername())) {
                     return createErrorNode("Reporter " + user.getUsername() +

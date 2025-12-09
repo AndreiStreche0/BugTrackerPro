@@ -6,6 +6,7 @@ import enums.*;
 import milestones.Milestone;
 import processing.AppStorage;
 import tickets.Ticket;
+import tickets.TicketHistory;
 import users.Developer;
 import users.User;
 
@@ -79,6 +80,12 @@ public class AssignTicketCommand extends Command {
             return createErrorNode("Cannot assign ticket " + ticketId + " from blocked milestone "
                     + currentMilestone.getName() + ".");
         }
+
+        TicketHistory history = TicketHistory.assigned(super.getUsername(), super.getTimestamp());
+        ticket.addHistory(history);
+        history = TicketHistory.statusChanged(ticket.getState().toString(),
+                TicketStatus.IN_PROGRESS.toString(), super.getUsername(), super.getTimestamp());
+        ticket.addHistory(history);
         ticket.setAssignedAt(super.getTimestamp());
         ticket.setAssignedTo(user);
         ticket.setState(TicketStatus.IN_PROGRESS);

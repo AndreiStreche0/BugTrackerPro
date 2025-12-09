@@ -6,6 +6,7 @@ import enums.TicketStatus;
 import notifications.Observers;
 import processing.AppStorage;
 import tickets.Ticket;
+import tickets.TicketHistory;
 import users.Developer;
 import users.User;
 
@@ -121,6 +122,7 @@ public class Milestone extends Observers {
                     " tickets are now CRITICAL.");
         }
     }
+
     public void incrementPriority(LocalDate newLastUpdateDate) {
         this.lastAutomaticUpdate = newLastUpdateDate;
         for (int id : this.getTicketIds()) {
@@ -147,6 +149,7 @@ public class Milestone extends Observers {
                     break;
                 case HIGH:
                     ticket.setBusinessPriority(BusinessPriority.CRITICAL);
+
                     break;
                 default:
                     continue;

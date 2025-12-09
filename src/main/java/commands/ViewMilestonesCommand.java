@@ -81,7 +81,7 @@ public class ViewMilestonesCommand extends Command{
             List<Integer> closedTickets = new ArrayList<>();
             for (int ticketId : milestone.getTicketIds()) {
                 TicketStatus ticketState = appStorage.getTicket(ticketId).getState();
-                if (ticketState == TicketStatus.CLOSED || ticketState == TicketStatus.RESOLVED) {
+                if (ticketState == TicketStatus.CLOSED) {
                     cnt_closed++;
                     closedTickets.add(ticketId);
                 } else {
@@ -109,8 +109,8 @@ public class ViewMilestonesCommand extends Command{
             outputNode.put("overdueBy", overdueBy);
             outputNode.set("openTickets",mapper.valueToTree(openTickets));
             outputNode.set("closedTickets", mapper.valueToTree(closedTickets));
-
-            double completionRate = (double) (cnt_closed / (cnt_closed + cnt_opened));
+            int totalTickets = cnt_closed + cnt_opened;
+            double completionRate = (double) cnt_closed / totalTickets;
             completionRate = Math.round(completionRate * 100.0) / 100.0;
             outputNode.put("completionPercentage", completionRate);
 

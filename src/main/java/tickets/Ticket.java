@@ -28,6 +28,7 @@ public abstract class Ticket {
     private TicketType type;
 
     private List<Comment> comments = new ArrayList<>();
+    private List<TicketHistory> history = new ArrayList<>();
 
     public String getSolvedAt() {
         return solvedAt;
@@ -149,5 +150,11 @@ public abstract class Ticket {
     }
     public void removeComment(Comment comment) {
         this.comments.remove(comment);
+    }
+    public void addHistory(TicketHistory historyItem) {
+        this.history.add(historyItem);
+    }
+    public List<TicketHistory> getHistory() {
+        return history;
     }
 }

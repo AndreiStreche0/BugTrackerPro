@@ -33,6 +33,12 @@ public class CommandFactory {
                     commandInput.getComment());
             case "undoAddComment" -> new UndoAddCommentCommand(commandInput.getUsername(),
                     commandInput.getTimestamp(), commandInput.getTicketId());
+            case "changeStatus" -> new ChangeStatusCommand(commandInput.getUsername(),
+                    commandInput.getTimestamp(), commandInput.getTicketId());
+            case "undoChangeStatus" -> new UndoChangeStatusCommand(commandInput.getUsername(),
+                    commandInput.getTimestamp(), commandInput.getTicketId());
+            case "viewTicketHistory" -> new ViewTicketHistoryCommand(commandInput.getUsername(),
+                    commandInput.getTimestamp());
             default -> {
                 System.out.println("Command not found");
                 yield null;

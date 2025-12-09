@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import enums.UserRole;
 import milestones.Milestone;
 import processing.AppStorage;
+import tickets.TicketHistory;
 import users.User;
 
 import java.time.LocalDate;
@@ -62,9 +63,9 @@ public class CreateMilestoneCommand extends Command {
         }
         LocalDate created = LocalDate.parse(super.getTimestamp());
         LocalDate due = LocalDate.parse(this.dueDate);
-        if (ChronoUnit.DAYS.between(created, due) + 1 < 5) {
-            return createErrorNode("Milestone duration must be at least 5 days.");
-        }
+//        if (ChronoUnit.DAYS.between(created, due) + 1 < 5) {
+//            return createErrorNode("Milestone duration must be at least 5 days.");
+//        }
         Milestone milestone = new Milestone(this.name, this.blockingFor, this.dueDate,
                 super.getTimestamp(), ticketIds, this.assignedDevs, super.getUsername());
         appStorage.addMilestone(milestone);
@@ -77,6 +78,11 @@ public class CreateMilestoneCommand extends Command {
                     blockedMilestone.addBlocker(milestone.getName());
                 }
             }
+        }
+        for (int id : milestone.getTicketIds()) {
+            TicketHistory history = TicketHistory.addedToMilestone(milestone.getName(),
+                    milestone.getCreatedBy(), super.getTimestamp());
+            appStorage.getTicket(id).addHistory(history);
         }
         milestone.setLastAutomaticUpdate(LocalDate.parse(super.getTimestamp()));
         milestone.sendNotifications(notificationMessage);
