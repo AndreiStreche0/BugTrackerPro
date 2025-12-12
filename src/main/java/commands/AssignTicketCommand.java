@@ -48,17 +48,15 @@ public class AssignTicketCommand extends Command {
         Milestone currentMilestone = null;
         Developer developer = (Developer) user;
 
-        if (!hasRequiredExpertise(developer.getExpertise(), ticket.getExpertiseArea())) {
+        if (!developer.hasRequiredExpertise(ticket.getExpertiseArea())) {
             return createErrorNode("Developer " + developer.getUsername() +
                     " cannot assign ticket " + ticketId + " due to expertise area. Required: " +
-                    errorExpertiseString(ticket.getExpertiseArea()) + "; Current: " +
-                            developer.getExpertise() + ".");
+                    errorExpertiseString(ticket) + "; Current: " + developer.getExpertise() + ".");
         }
-        if (!hasRequiredSeniority(developer.getSeniority(), ticket.getBusinessPriority())) {
+        if (!developer.hasRequiredSeniority(ticket.getBusinessPriority())) {
             return createErrorNode("Developer " + developer.getUsername() + " cannot assign ticket" +
                     " " + ticketId + " due to seniority level. Required: " +
-                    errorSeniorityString(ticket.getBusinessPriority()) + "; Current: " +
-                    developer.getSeniority() + ".");
+                    errorSeniorityString(ticket) + "; Current: " + developer.getSeniority() + ".");
         }
 
         if (ticket.getState() != TicketStatus.OPEN) {
@@ -92,24 +90,10 @@ public class AssignTicketCommand extends Command {
         developer.addAssignedTicket(ticket);
         return null;
     }
-    private boolean hasRequiredExpertise(ExpertiseArea developerExpertise, ExpertiseArea
-            ticketArea) {
-        if (developerExpertise == ExpertiseArea.FULLSTACK) {
-            return true;
-        }
-        return switch (developerExpertise) {
-            case FRONTEND -> ticketArea == ExpertiseArea.FRONTEND || ticketArea == ExpertiseArea.DESIGN;
-            case BACKEND -> ticketArea == ExpertiseArea.BACKEND || ticketArea == ExpertiseArea.DB;
-            case DEVOPS -> ticketArea == ExpertiseArea.DEVOPS;
-            case DESIGN -> ticketArea == ExpertiseArea.DESIGN || ticketArea == ExpertiseArea.FRONTEND;
-            case DB -> ticketArea == ExpertiseArea.DB;
-            default -> false;
-        };
-    }
-    private String errorExpertiseString (ExpertiseArea ticketExpertise) {
+    private String errorExpertiseString (Ticket ticket) {
         List<String> requiredAreas = new ArrayList<>();
         for (ExpertiseArea expertise : ExpertiseArea.values()) {
-            if (hasRequiredExpertise(expertise, ticketExpertise)) {
+            if (ticket.checkExpertiseLevel(expertise)) {
                 requiredAreas.add(expertise.toString());
             }
         }
@@ -123,20 +107,10 @@ public class AssignTicketCommand extends Command {
         }
         return outputString.toString();
     }
-    private boolean hasRequiredSeniority (Seniority developerSeniority, BusinessPriority
-            ticketPriority) {
-        return switch (developerSeniority) {
-            case Seniority.SENIOR -> true;
-            case Seniority.MID -> ticketPriority != BusinessPriority.CRITICAL;
-            case Seniority.JUNIOR -> ticketPriority == BusinessPriority.LOW ||
-                    ticketPriority == BusinessPriority.MEDIUM;
-            default -> false;
-        };
-    }
-    public String errorSeniorityString (BusinessPriority ticketPriority) {
+    public String errorSeniorityString (Ticket ticket) {
         List<String> requiredLevels = new ArrayList<>();
         for (Seniority seniority : Seniority.values()) {
-            if (hasRequiredSeniority(seniority, ticketPriority)) {
+            if (ticket.checkSeniority(seniority)) {
                 requiredLevels.add(seniority.toString());
             }
         }

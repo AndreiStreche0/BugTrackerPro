@@ -156,4 +156,22 @@ public class Milestone extends Observers {
             }
         }
     }
+    public boolean isTicketAssignable (Ticket ticket, Developer developer) {
+        if (this.isBlocked()) {
+            return false;
+        }
+        if (ticket.getState() != TicketStatus.OPEN) {
+            return false;
+        }
+        if (!assignedDevs.contains(developer.getUsername())) {
+            return false;
+        }
+        if (!developer.hasRequiredSeniority(ticket.getBusinessPriority())) {
+            return false;
+        }
+        if (!developer.hasRequiredExpertise(ticket.getExpertiseArea())) {
+            return false;
+        }
+        return true;
+    }
 }

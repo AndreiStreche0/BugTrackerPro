@@ -1,10 +1,7 @@
 package tickets;
 import commands.Command;
-import enums.BusinessPriority;
+import enums.*;
 
-import enums.ExpertiseArea;
-import enums.TicketStatus;
-import enums.TicketType;
 import processing.Comment;
 import users.User;
 
@@ -156,5 +153,27 @@ public abstract class Ticket {
     }
     public List<TicketHistory> getHistory() {
         return history;
+    }
+    public boolean checkExpertiseLevel(ExpertiseArea expertise) {
+        if (expertise == ExpertiseArea.FULLSTACK) {
+            return true;
+        }
+        return switch (expertise) {
+            case FRONTEND -> this.expertiseArea == ExpertiseArea.FRONTEND || this.expertiseArea == ExpertiseArea.DESIGN;
+            case BACKEND -> this.expertiseArea == ExpertiseArea.BACKEND || this.expertiseArea == ExpertiseArea.DB;
+            case DEVOPS -> this.expertiseArea == ExpertiseArea.DEVOPS;
+            case DESIGN -> this.expertiseArea == ExpertiseArea.DESIGN || this.expertiseArea == ExpertiseArea.FRONTEND;
+            case DB -> this.expertiseArea == ExpertiseArea.DB;
+            default -> false;
+        };
+    }
+    public boolean checkSeniority(Seniority seniority) {
+        return switch (seniority) {
+            case SENIOR -> true;
+            case MID -> this.businessPriority != BusinessPriority.CRITICAL;
+            case JUNIOR -> this.businessPriority == BusinessPriority.LOW ||
+                    this.businessPriority == BusinessPriority.MEDIUM;
+            default -> false;
+        };
     }
 }

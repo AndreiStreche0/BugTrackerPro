@@ -2,6 +2,7 @@ package factory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import commands.*;
+import commands.SearchCommand;
 import enums.AppPhase;
 import fileio.CommandInput;
 
@@ -39,6 +40,8 @@ public class CommandFactory {
                     commandInput.getTimestamp(), commandInput.getTicketId());
             case "viewTicketHistory" -> new ViewTicketHistoryCommand(commandInput.getUsername(),
                     commandInput.getTimestamp());
+            case "search" -> new SearchCommand(commandInput.getUsername(),
+                    commandInput.getTimestamp(), commandInput.getFilters());
             default -> {
                 System.out.println("Command not found");
                 yield null;
