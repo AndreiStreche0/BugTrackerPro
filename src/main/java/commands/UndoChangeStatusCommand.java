@@ -15,7 +15,7 @@ public class UndoChangeStatusCommand extends Command {
     private int ticketId;
 
     public UndoChangeStatusCommand(String username, String timestamp, int ticketId) {
-        super("changeStatus", username, timestamp);
+        super("undoChangeStatus", username, timestamp);
         this.appStorage = AppStorage.getInstance();
         this.ticketId = ticketId;
     }
@@ -54,6 +54,7 @@ public class UndoChangeStatusCommand extends Command {
                 break;
             case TicketStatus.RESOLVED:
                 newState = TicketStatus.IN_PROGRESS;
+                ticket.setSolvedAt("");
                 break;
             default:
                 return null;

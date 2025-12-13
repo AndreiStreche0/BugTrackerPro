@@ -26,6 +26,7 @@ public class Milestone extends Observers {
     private final AppStorage appStorage;
     private final Set<String> blockers = new HashSet<>();
     private LocalDate lastAutomaticUpdate;
+    private boolean warnedOfDeadline;
 
     public Milestone(String name, List<String> blockingFor, String dueDate,
                      String createdAt, List<Integer> ticketIds,
@@ -38,6 +39,15 @@ public class Milestone extends Observers {
         this.assignedDevs = assignedDevs;
         this.createdBy = createdBy;
         this.appStorage = AppStorage.getInstance();
+        this.warnedOfDeadline = false;
+    }
+
+    public boolean isWarnedOfDeadline() {
+        return warnedOfDeadline;
+    }
+
+    public void setWarnedOfDeadline(boolean warnedOfDeadline) {
+        this.warnedOfDeadline = warnedOfDeadline;
     }
 
     public String getName() {
@@ -118,9 +128,9 @@ public class Milestone extends Observers {
         for (int id : this.getTicketIds()) {
             Ticket ticket = appStorage.getTicket(id);
             ticket.setBusinessPriority(BusinessPriority.CRITICAL);
-            this.sendNotifications("Milestone " + this.name + "is due tomorrow. All unresolved" +
-                    " tickets are now CRITICAL.");
         }
+        this.sendNotifications("Milestone " + this.name + " is due tomorrow. All unresolved" +
+                " tickets are now CRITICAL.");
     }
 
     public void incrementPriority(LocalDate newLastUpdateDate) {

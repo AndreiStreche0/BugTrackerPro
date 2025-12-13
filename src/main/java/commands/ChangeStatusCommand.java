@@ -55,10 +55,10 @@ public class ChangeStatusCommand extends Command {
         switch (ticket.getState()) {
             case TicketStatus.IN_PROGRESS:
                 newState = TicketStatus.RESOLVED;
+                ticket.setSolvedAt(super.getTimestamp());
                 break;
             case TicketStatus.RESOLVED:
                 newState = TicketStatus.CLOSED;
-                ticket.setSolvedAt(super.getTimestamp());
                 break;
             default:
                 return null;
@@ -99,14 +99,15 @@ public class ChangeStatusCommand extends Command {
                     User developer = appStorage.findUser(developerName);
                     blockedMilestone.addObserver((Developer) developer);
                 }
-                blockedMilestone.sendNotifications("Milestone " + blockedMilestone.getName() +
-                        " is now unblocked as tichet " + ticket.getId() + " has been CLOSED.");
                 LocalDate dueDate = LocalDate.parse(blockedMilestone.getDueDate());
                 LocalDate current = LocalDate.parse(super.getTimestamp());
 
                 if (current.isAfter(dueDate)) {
                     blockedMilestone.sendNotifications("Milestone " + blockedMilestone.getName() +
                             " was unblocked after due date. All active tickets are now CRITICAL.");
+                } else {
+                    blockedMilestone.sendNotifications("Milestone " + blockedMilestone.getName() +
+                            " is now unblocked as tichet " + ticket.getId() + " has been CLOSED.");
                 }
             }
         }

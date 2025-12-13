@@ -65,6 +65,9 @@ public class Developer extends User implements Observer {
     public void update(String notification) {
         this.notifications.add(notification);
     }
+    public void clearNotifications() {
+        this.notifications.clear();
+    }
     public boolean hasRequiredExpertise(ExpertiseArea ticketArea) {
         if (this.expertise == ExpertiseArea.FULLSTACK) {
             return true;

@@ -1,47 +1,46 @@
 package factory;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import commands.*;
 import commands.SearchCommand;
-import enums.AppPhase;
 import fileio.CommandInput;
-
-import java.util.List;
 
 public class CommandFactory {
     public static Command createCommand(CommandInput commandInput) {
+        String username = commandInput.getUsername();
+        String timestamp = commandInput.getTimestamp();
         return switch (commandInput.getCommand()) {
-            case "reportTicket" -> new ReportTicketCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp(), commandInput.getParams());
-            case "viewTickets" -> new ViewTicketsCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp());
-            case "lostInvestors" -> new LostInvestorsCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp());
-            case "createMilestone" -> new CreateMilestoneCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp(), commandInput.getBlockingFor(),
-                    commandInput.getTickets(), commandInput.getAssignedDevs(),
-                    commandInput.getDueDate(), commandInput.getName());
-            case "viewMilestones" -> new ViewMilestonesCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp());
-            case "assignTicket" -> new AssignTicketCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp(), commandInput.getTicketId());
-            case "undoAssignTicket" -> new UndoAssignTicketCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp(), commandInput.getTicketId());
-            case "viewAssignedTickets" -> new ViewAssignedTicketsCommand(commandInput.getUsername()
-                    , commandInput.getTimestamp());
-            case "addComment" -> new AddCommentCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp(), commandInput.getTicketId(),
-                    commandInput.getComment());
-            case "undoAddComment" -> new UndoAddCommentCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp(), commandInput.getTicketId());
-            case "changeStatus" -> new ChangeStatusCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp(), commandInput.getTicketId());
-            case "undoChangeStatus" -> new UndoChangeStatusCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp(), commandInput.getTicketId());
-            case "viewTicketHistory" -> new ViewTicketHistoryCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp());
-            case "search" -> new SearchCommand(commandInput.getUsername(),
-                    commandInput.getTimestamp(), commandInput.getFilters());
+            case "reportTicket" -> new ReportTicketCommand(username, timestamp,
+                    commandInput.getParams());
+            case "viewTickets" -> new ViewTicketsCommand(username, timestamp);
+            case "lostInvestors" -> new LostInvestorsCommand(username, timestamp);
+            case "createMilestone" -> new CreateMilestoneCommand(username, timestamp,
+                    commandInput.getBlockingFor(), commandInput.getTickets(),
+                    commandInput.getAssignedDevs(), commandInput.getDueDate(),
+                    commandInput.getName());
+            case "viewMilestones" -> new ViewMilestonesCommand(username, timestamp);
+            case "assignTicket" -> new AssignTicketCommand(username, timestamp,
+                    commandInput.getTicketId());
+            case "undoAssignTicket" -> new UndoAssignTicketCommand(username, timestamp,
+                    commandInput.getTicketId());
+            case "viewAssignedTickets" -> new ViewAssignedTicketsCommand(username, timestamp);
+            case "addComment" -> new AddCommentCommand(username, timestamp,
+                    commandInput.getTicketId(), commandInput.getComment());
+            case "undoAddComment" -> new UndoAddCommentCommand(username, timestamp,
+                    commandInput.getTicketId());
+            case "changeStatus" -> new ChangeStatusCommand(username, timestamp,
+                    commandInput.getTicketId());
+            case "undoChangeStatus" -> new UndoChangeStatusCommand(username, timestamp,
+                    commandInput.getTicketId());
+            case "viewTicketHistory" -> new ViewTicketHistoryCommand(username, timestamp);
+            case "search" -> new SearchCommand(username, timestamp, commandInput.getFilters());
+            case "viewNotifications" -> new ViewNotificationsCommand(username, timestamp);
+            case "generateCustomerImpactReport" -> new GenerateCustomerImpactReportCommand(username
+                    , timestamp);
+            case "generateTicketRiskReport" -> new GenerateTicketRiskReportCommand(username
+                    , timestamp);
+            case "generateResolutionEfficiencyReport" -> new GenerateResolutionEfficiencyReport(
+                    username, timestamp);
+            case "appStabilityReport" -> new AppStabilityReportCommand(username, timestamp);
             default -> {
                 System.out.println("Command not found");
                 yield null;

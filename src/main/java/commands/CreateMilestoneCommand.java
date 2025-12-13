@@ -6,6 +6,7 @@ import enums.UserRole;
 import milestones.Milestone;
 import processing.AppStorage;
 import tickets.TicketHistory;
+import users.Developer;
 import users.User;
 
 import java.time.LocalDate;
@@ -63,12 +64,18 @@ public class CreateMilestoneCommand extends Command {
         }
         LocalDate created = LocalDate.parse(super.getTimestamp());
         LocalDate due = LocalDate.parse(this.dueDate);
-//        if (ChronoUnit.DAYS.between(created, due) + 1 < 5) {
-//            return createErrorNode("Milestone duration must be at least 5 days.");
-//        }
+
         Milestone milestone = new Milestone(this.name, this.blockingFor, this.dueDate,
                 super.getTimestamp(), ticketIds, this.assignedDevs, super.getUsername());
         appStorage.addMilestone(milestone);
+        for (String developerName : this.assignedDevs) {
+            User subordonate = appStorage.findUser(developerName);
+            if (subordonate.getRole() == UserRole.DEVELOPER) {
+                milestone.addObserver((Developer) subordonate);
+            } else {
+                return createErrorNode("Assigned developer is not a developer");
+            }
+        }
         String notificationMessage = "New milestone " + milestone.getName() +
                 " has been created with due date " + milestone.getDueDate() + ".";
         if (milestone.getBlockingFor() != null) {

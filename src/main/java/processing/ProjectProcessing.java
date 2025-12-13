@@ -44,8 +44,9 @@ public class ProjectProcessing {
             LocalDate dueDate = LocalDate.parse(milestone.getDueDate());
             LocalDate lastChange = milestone.getLastAutomaticUpdate();
             if (!current.isBefore(dueDate.minusDays(1)) &&
-                    lastChange.isBefore(dueDate.minusDays(1))) {
+                    lastChange.isBefore(dueDate.minusDays(1)) && !milestone.isWarnedOfDeadline()) {
                 milestone.deadlineIsComing();
+                milestone.setWarnedOfDeadline(true);
             }
 
             int daysSinceCreationCurrent = (int) ChronoUnit.DAYS.between(lastChange, current) + 1;
