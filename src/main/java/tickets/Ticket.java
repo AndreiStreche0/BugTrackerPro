@@ -19,6 +19,7 @@ public abstract class Ticket {
     private String updatedAt;
     private String reportedBy;
     private String solvedAt;
+    private String closedAt;
     private String assignedAt;
     private User assignedTo;
     private TicketStatus state;
@@ -26,6 +27,14 @@ public abstract class Ticket {
 
     private List<Comment> comments = new ArrayList<>();
     private List<TicketHistory> history = new ArrayList<>();
+
+    public String getClosedAt() {
+        return closedAt;
+    }
+
+    public void setClosedAt(String closedAt) {
+        this.closedAt = closedAt;
+    }
 
     public String getSolvedAt() {
         return solvedAt;

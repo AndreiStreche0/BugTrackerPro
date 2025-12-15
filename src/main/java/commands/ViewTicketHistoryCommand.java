@@ -75,6 +75,7 @@ public class ViewTicketHistoryCommand extends Command{
         output.put("username", super.getUsername());
         output.put("timestamp", super.getTimestamp());
         for (Ticket ticket : viewableTickets) {
+
             ObjectNode ticketNode = mapper.createObjectNode();
             ticketNode.put("id", ticket.getId());
             ticketNode.put("title", ticket.getTitle());

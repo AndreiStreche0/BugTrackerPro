@@ -41,6 +41,9 @@ public class CommandFactory {
             case "generateResolutionEfficiencyReport" -> new GenerateResolutionEfficiencyReport(
                     username, timestamp);
             case "appStabilityReport" -> new AppStabilityReportCommand(username, timestamp);
+            case "generatePerformanceReport" -> new GeneratePerformanceReportCommand(username,
+                    timestamp);
+            case "startTestingPhase" -> new StartTestingPhaseCommand(username, timestamp);
             default -> {
                 System.out.println("Command not found");
                 yield null;

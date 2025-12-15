@@ -107,16 +107,17 @@ public class SearchCommand extends Command{
                 ticketNode.put("solvedAt", ticket.getSolvedAt() == null ? "" :
                         ticket.getSolvedAt());
                 ticketNode.put("reportedBy", ticket.getReportedBy());
-
+                List<String> matches = new ArrayList<>();
                 if (filters.get("keywords") != null) {
-                    List<String> matches = new ArrayList<>();
                     for (String keyword : (List<String>) filters.get("keywords")) {
-
-                        if (ticket.getTitle().toLowerCase().contains(keyword.toLowerCase()) || ticket.getDescription().contains(keyword.toLowerCase())) {
+                        if (ticket.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
+                                ticket.getDescription() != null && ticket.getDescription().contains(keyword.toLowerCase())) {
                             matches.add(keyword.toLowerCase());
                         }
                     }
                     Collections.sort(matches);
+                }
+                if (user.getRole() == UserRole.MANAGER) {
                     ticketNode.set("matchingWords", mapper.valueToTree(matches));
                 }
                 filteredTickets.add(ticketNode);

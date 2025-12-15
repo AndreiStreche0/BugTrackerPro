@@ -3,6 +3,7 @@ package milestones;
 import enums.BusinessPriority;
 import enums.Seniority;
 import enums.TicketStatus;
+import enums.UserRole;
 import notifications.Observers;
 import processing.AppStorage;
 import tickets.Ticket;
@@ -117,7 +118,9 @@ public class Milestone extends Observers {
     }
 
     public void removeBlocker(String milestoneName) {
-        this.blockers.remove(milestoneName);
+        if (!this.blockers.isEmpty()) {
+            this.blockers.remove(milestoneName);
+        }
     }
 
     public boolean isBlocked() {
@@ -127,7 +130,9 @@ public class Milestone extends Observers {
     public void deadlineIsComing() {
         for (int id : this.getTicketIds()) {
             Ticket ticket = appStorage.getTicket(id);
-            ticket.setBusinessPriority(BusinessPriority.CRITICAL);
+            if (ticket.getState() != TicketStatus.CLOSED) {
+                ticket.setBusinessPriority(BusinessPriority.CRITICAL);
+            }
         }
         this.sendNotifications("Milestone " + this.name + " is due tomorrow. All unresolved" +
                 " tickets are now CRITICAL.");
@@ -137,25 +142,15 @@ public class Milestone extends Observers {
         this.lastAutomaticUpdate = newLastUpdateDate;
         for (int id : this.getTicketIds()) {
             Ticket ticket = appStorage.getTicket(id);
+            if (ticket.getState() == TicketStatus.CLOSED) {
+                continue;
+            }
             switch (ticket.getBusinessPriority()) {
                 case LOW:
                     ticket.setBusinessPriority(BusinessPriority.MEDIUM);
-                    for (String developerName : this.assignedDevs) {
-                        User user = appStorage.findUser(developerName);
-                        if (((Developer) user).getSeniority() == Seniority.JUNIOR) {
-                            ticket.setState(TicketStatus.OPEN);
-                        }
-                    }
                     break;
                 case MEDIUM:
                     ticket.setBusinessPriority(BusinessPriority.HIGH);
-                    for (String developerName : this.assignedDevs) {
-                        User user = appStorage.findUser(developerName);
-                        if (((Developer) user).getSeniority() == Seniority.JUNIOR ||
-                                ((Developer) user).getSeniority() == Seniority.MID) {
-                            ticket.setState(TicketStatus.OPEN);
-                        }
-                    }
                     break;
                 case HIGH:
                     ticket.setBusinessPriority(BusinessPriority.CRITICAL);
@@ -163,6 +158,15 @@ public class Milestone extends Observers {
                     break;
                 default:
                     continue;
+            }
+            if (ticket.getAssignedTo() != null && ticket.getAssignedTo().getRole() == UserRole.DEVELOPER) {
+                Developer dev = (Developer) ticket.getAssignedTo();
+
+                if (!dev.hasRequiredSeniority(ticket.getBusinessPriority())) {
+                    ticket.setState(TicketStatus.OPEN);
+                    ticket.setAssignedTo(null);
+                    ticket.setAssignedAt(null);
+                }
             }
         }
     }

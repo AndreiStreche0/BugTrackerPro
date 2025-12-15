@@ -17,7 +17,7 @@ public class UIFeedbackFactory implements TicketFactory{
         uiFeedback.setDescription((String) attributes.get("description"));
         uiFeedback.setBusinessPriority(BusinessPriority.valueOf(
                 (String) attributes.get("businessPriority")));
-        uiFeedback.setExpertiseArea(ExpertiseArea.valueOf(
+        uiFeedback.setExpertiseArea(ExpertiseArea.getType(
                 (String) attributes.get("expertiseArea")));
         uiFeedback.setReportedBy((String) attributes.get("reportedBy"));
         uiFeedback.setCreatedAt((String) attributes.get("timestamp"));

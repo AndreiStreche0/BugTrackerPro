@@ -3,6 +3,7 @@ package commands;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import enums.BusinessPriority;
+import enums.TicketStatus;
 import enums.TicketType;
 import enums.UserRole;
 import metrics.MetricBaseMethods;
@@ -56,7 +57,8 @@ public class GenerateResolutionEfficiencyReport extends Command{
             scoresByType.put(t, new ArrayList<>());
         }
         for (Ticket ticket : appStorage.getTickets()) {
-            if (report.isTicketValid(ticket)) {
+            if ((ticket.getState() == TicketStatus.RESOLVED || ticket.getState() == TicketStatus.CLOSED)
+                    && report.isTicketValid(ticket)) {
                 ticketsByType.put(ticket.getType(), ticketsByType.get(ticket.getType()) + 1);
                 ticketsByPriority.put(ticket.getBusinessPriority(),
                         ticketsByPriority.get(ticket.getBusinessPriority()) + 1);

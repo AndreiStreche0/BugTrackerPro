@@ -59,6 +59,7 @@ public class ChangeStatusCommand extends Command {
                 break;
             case TicketStatus.RESOLVED:
                 newState = TicketStatus.CLOSED;
+                ticket.setClosedAt(super.getTimestamp());
                 break;
             default:
                 return null;
@@ -95,6 +96,7 @@ public class ChangeStatusCommand extends Command {
                 if (blockedMilestone == null) {
                     break;
                 }
+                blockedMilestone.removeBlocker(currMilestone.getName());
                 for (String developerName : blockedMilestone.getAssignedDevs()) {
                     User developer = appStorage.findUser(developerName);
                     blockedMilestone.addObserver((Developer) developer);
@@ -107,7 +109,7 @@ public class ChangeStatusCommand extends Command {
                             " was unblocked after due date. All active tickets are now CRITICAL.");
                 } else {
                     blockedMilestone.sendNotifications("Milestone " + blockedMilestone.getName() +
-                            " is now unblocked as tichet " + ticket.getId() + " has been CLOSED.");
+                            " is now unblocked as ticket " + ticket.getId() + " has been CLOSED.");
                 }
             }
         }

@@ -38,12 +38,9 @@ public class ProjectProcessing {
         LocalDate current = LocalDate.parse(currentTimestamp);
         List<Milestone> milestones = appStorage.getMilestones();
         for (Milestone milestone: milestones) {
-            if (milestone.isBlocked()) {
-                continue;
-            }
             LocalDate dueDate = LocalDate.parse(milestone.getDueDate());
             LocalDate lastChange = milestone.getLastAutomaticUpdate();
-            if (!current.isBefore(dueDate.minusDays(1)) &&
+            if (!milestone.isBlocked() && current.isEqual(dueDate.minusDays(1)) &&
                     lastChange.isBefore(dueDate.minusDays(1)) && !milestone.isWarnedOfDeadline()) {
                 milestone.deadlineIsComing();
                 milestone.setWarnedOfDeadline(true);
@@ -53,7 +50,13 @@ public class ProjectProcessing {
             int increments = Math.max(0, daysSinceCreationCurrent / 3);
             LocalDate newUpdateDate = current.minusDays(daysSinceCreationCurrent % 3);
             for (int k = 0; k < increments; k++) {
-                milestone.incrementPriority(newUpdateDate);
+                if (!milestone.isBlocked()) {
+                    milestone.incrementPriority(newUpdateDate);
+                }
+            }
+            if (increments > 0) {
+                LocalDate newLastUpdate = lastChange.plusDays(increments * 3);
+                milestone.setLastAutomaticUpdate(newLastUpdate);
             }
         }
     }

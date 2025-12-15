@@ -63,6 +63,7 @@ public class ViewMilestonesCommand extends Command{
         output.put("timestamp", super.getTimestamp());
 
         ArrayNode milestonesArray = mapper.createArrayNode();
+        LocalDate latestClosing = LocalDate.MIN;
         for (Milestone milestone : viewableMilestones) {
             ObjectNode outputNode = mapper.createObjectNode();
             outputNode.put("name", milestone.getName());
@@ -83,6 +84,9 @@ public class ViewMilestonesCommand extends Command{
                 TicketStatus ticketState = appStorage.getTicket(ticketId).getState();
                 if (ticketState == TicketStatus.CLOSED) {
                     cnt_closed++;
+                    if (LocalDate.parse(appStorage.getTicket(ticketId).getClosedAt()).isAfter(latestClosing)) {
+                        latestClosing = LocalDate.parse(appStorage.getTicket(ticketId).getClosedAt());
+                    }
                     closedTickets.add(ticketId);
                 } else {
                     cnt_opened++;
@@ -100,7 +104,14 @@ public class ViewMilestonesCommand extends Command{
             int daysUntilMilestone = (int) ChronoUnit.DAYS.between(currentTime, dueTime) + 1;
             int overdueBy = 0;
             if (currentTime.isAfter(dueTime)) {
-                overdueBy = (int) ChronoUnit.DAYS.between(dueTime, currentTime) + 1;
+                if (cnt_opened != 0 || latestClosing.isAfter(currentTime)) {
+                    overdueBy = (int) ChronoUnit.DAYS.between(dueTime, currentTime) + 1;
+                } else {
+                    overdueBy = (int) ChronoUnit.DAYS.between(dueTime, latestClosing) + 1;
+                }
+            }
+            if (overdueBy < 0) {
+                overdueBy = 0;
             }
             if (daysUntilMilestone < 0) {
                 daysUntilMilestone = 0;

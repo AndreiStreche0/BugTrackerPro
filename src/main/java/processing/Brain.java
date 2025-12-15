@@ -42,6 +42,9 @@ public class Brain {
             if (result == null && command.getCommandName().equals("lostInvestors")) {
                 projectProcessor.closeApp(command.getTimestamp());
             }
+            if (result == null && command.getCommandName().equals("startTestingPhase")) {
+                projectProcessor.startTestingPhase(command.getTimestamp());
+            }
             if (result != null) {
                 outputs.add(result);
             }
