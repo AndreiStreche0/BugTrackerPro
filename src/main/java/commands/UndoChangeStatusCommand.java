@@ -9,18 +9,23 @@ import tickets.Ticket;
 import tickets.TicketHistory;
 import users.User;
 
-public class UndoChangeStatusCommand extends Command {
+public final class UndoChangeStatusCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
-    private int ticketId;
+    private final int ticketId;
 
-    public UndoChangeStatusCommand(String username, String timestamp, int ticketId) {
+    public UndoChangeStatusCommand(final String username, final String timestamp,
+                                   final int ticketId) {
         super("undoChangeStatus", username, timestamp);
         this.appStorage = AppStorage.getInstance();
         this.ticketId = ticketId;
     }
-
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "undoChangeStatus");
         output.put("username", super.getUsername());
@@ -29,7 +34,7 @@ public class UndoChangeStatusCommand extends Command {
         return output;
     }
 
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         Ticket ticket = appStorage.getTicket(this.ticketId);
         if (user == null) {

@@ -8,15 +8,23 @@ import processing.AppStorage;
 import users.Developer;
 import users.User;
 
-public class ViewNotificationsCommand extends Command {
+/**
+ * shows all the notifications of a developer
+ */
+public final class ViewNotificationsCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
-    public ViewNotificationsCommand(String username, String timestamp) {
+    public ViewNotificationsCommand(final String username, final String timestamp) {
         super("viewNotifications", username, timestamp);
         appStorage = AppStorage.getInstance();
     }
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "viewNotifications");
         output.put("username", super.getUsername());
@@ -24,8 +32,13 @@ public class ViewNotificationsCommand extends Command {
         output.put("error", message);
         return output;
     }
+    /**
+     * shows all the notifications a developer has
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         ObjectNode output = mapper.createObjectNode();
         if (super.getUsername() == null || appStorage.findUser(super.getUsername()) == null) {
             return createErrorNode("The user " + super.getUsername() + " doesn't exist.");

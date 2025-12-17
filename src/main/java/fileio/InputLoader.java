@@ -10,10 +10,17 @@ import java.util.Arrays;
 import java.util.List;
 
 @Getter
+/**
+ * class to load all the input from the input json file
+ */
 public final class InputLoader {
     private final List<CommandInput> commands;
     private final List<UserInput> users;
 
+    /**
+     * loads the command and user input
+     * @param inputPath the file path
+     */
     public InputLoader(final String inputPath) {
         ObjectMapper mapper = new ObjectMapper();
         List<CommandInput> commandsList = new ArrayList<>();

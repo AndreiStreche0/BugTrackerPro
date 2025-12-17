@@ -16,14 +16,22 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-public class GenerateCustomerImpactReportCommand extends Command{
+/**
+ * generates the customer impact report
+ */
+public final class GenerateCustomerImpactReportCommand extends Command{
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
-    public GenerateCustomerImpactReportCommand(String username, String timestamp) {
+    public GenerateCustomerImpactReportCommand(final String username, final String timestamp) {
         super("generateCustomerImpactReport", username, timestamp);
         this.appStorage = AppStorage.getInstance();
     }
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "generateCustomerImpactReport");
         output.put("username", super.getUsername());
@@ -31,8 +39,13 @@ public class GenerateCustomerImpactReportCommand extends Command{
         output.put("error", message);
         return output;
     }
+    /**
+     * generates the customer impact report and formats the output
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         ObjectNode output = mapper.createObjectNode();
         if (user == null) {

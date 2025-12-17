@@ -4,7 +4,10 @@ import enums.Frequency;
 import enums.Severity;
 import enums.TicketType;
 
-public class Bug extends Ticket {
+/**
+ * Bug class that holds all the specific parameters for this ticket type
+ */
+public final class Bug extends Ticket {
     private String expectedBehavior;
     private String actualBehavior;
     private Frequency frequency;
@@ -12,7 +15,7 @@ public class Bug extends Ticket {
     private String environment;
     private int errorCode;
 
-    public Bug(String createdAt) {
+    public Bug(final String createdAt) {
         super(createdAt, createdAt);
         this.setType(TicketType.BUG);
     }
@@ -21,7 +24,7 @@ public class Bug extends Ticket {
         return expectedBehavior;
     }
 
-    public void setExpectedBehavior(String expectedBehavior) {
+    public void setExpectedBehavior(final String expectedBehavior) {
         this.expectedBehavior = expectedBehavior;
     }
 
@@ -29,7 +32,7 @@ public class Bug extends Ticket {
         return actualBehavior;
     }
 
-    public void setActualBehavior(String actualBehavior) {
+    public void setActualBehavior(final String actualBehavior) {
         this.actualBehavior = actualBehavior;
     }
 
@@ -37,7 +40,7 @@ public class Bug extends Ticket {
         return frequency;
     }
 
-    public void setFrequency(Frequency frequency) {
+    public void setFrequency(final Frequency frequency) {
         this.frequency = frequency;
     }
 
@@ -45,7 +48,7 @@ public class Bug extends Ticket {
         return severity;
     }
 
-    public void setSeverity(Severity severity) {
+    public void setSeverity(final Severity severity) {
         this.severity = severity;
     }
 
@@ -53,7 +56,7 @@ public class Bug extends Ticket {
         return environment;
     }
 
-    public void setEnvironment(String environment) {
+    public void setEnvironment(final String environment) {
         this.environment = environment;
     }
 
@@ -61,7 +64,7 @@ public class Bug extends Ticket {
         return errorCode;
     }
 
-    public void setErrorCode(int errorCode) {
+    public void setErrorCode(final int errorCode) {
         this.errorCode = errorCode;
     }
 }

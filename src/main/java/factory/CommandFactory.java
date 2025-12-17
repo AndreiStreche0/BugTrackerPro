@@ -4,10 +4,21 @@ import commands.*;
 import commands.SearchCommand;
 import fileio.CommandInput;
 
+/**
+ * factory for creating the commands
+ */
 public class CommandFactory {
-    public static Command createCommand(CommandInput commandInput) {
+    /**
+     * @param commandInput the input necessary for command creation
+     * @return a new command object
+     */
+    public static Command createCommand(final CommandInput commandInput) {
         String username = commandInput.getUsername();
         String timestamp = commandInput.getTimestamp();
+        int ticketId = 0;
+        if (commandInput.getTicketId() != null) {
+            ticketId = commandInput.getTicketId();
+        }
         return switch (commandInput.getCommand()) {
             case "reportTicket" -> new ReportTicketCommand(username, timestamp,
                     commandInput.getParams());
@@ -18,19 +29,14 @@ public class CommandFactory {
                     commandInput.getAssignedDevs(), commandInput.getDueDate(),
                     commandInput.getName());
             case "viewMilestones" -> new ViewMilestonesCommand(username, timestamp);
-            case "assignTicket" -> new AssignTicketCommand(username, timestamp,
-                    commandInput.getTicketId());
-            case "undoAssignTicket" -> new UndoAssignTicketCommand(username, timestamp,
-                    commandInput.getTicketId());
+            case "assignTicket" -> new AssignTicketCommand(username, timestamp, ticketId);
+            case "undoAssignTicket" -> new UndoAssignTicketCommand(username, timestamp, ticketId);
             case "viewAssignedTickets" -> new ViewAssignedTicketsCommand(username, timestamp);
-            case "addComment" -> new AddCommentCommand(username, timestamp,
-                    commandInput.getTicketId(), commandInput.getComment());
-            case "undoAddComment" -> new UndoAddCommentCommand(username, timestamp,
-                    commandInput.getTicketId());
-            case "changeStatus" -> new ChangeStatusCommand(username, timestamp,
-                    commandInput.getTicketId());
-            case "undoChangeStatus" -> new UndoChangeStatusCommand(username, timestamp,
-                    commandInput.getTicketId());
+            case "addComment" -> new AddCommentCommand(username, timestamp, ticketId,
+                    commandInput.getComment());
+            case "undoAddComment" -> new UndoAddCommentCommand(username, timestamp, ticketId);
+            case "changeStatus" -> new ChangeStatusCommand(username, timestamp, ticketId);
+            case "undoChangeStatus" -> new UndoChangeStatusCommand(username, timestamp, ticketId);
             case "viewTicketHistory" -> new ViewTicketHistoryCommand(username, timestamp);
             case "search" -> new SearchCommand(username, timestamp, commandInput.getFilters());
             case "viewNotifications" -> new ViewNotificationsCommand(username, timestamp);

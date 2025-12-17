@@ -15,21 +15,25 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Brain {
+/**
+ * class used for parsing commands and handling app phase
+ */
+public final class Brain {
     private final List<CommandInput> commands;
-    private final AppStorage appStorage;
-    private final ObjectMapper mapper;
     private ProjectProcessing projectProcessor;
     private StateSpecificActions currentState;
 
-    public Brain(List<CommandInput> commands, List<UserInput> users) {
+    public Brain(final List<CommandInput> commands, final List<UserInput> users) {
         this.commands = commands;
-        this.appStorage = AppStorage.getInstance();
-        this.mapper = new ObjectMapper();
+        AppStorage appStorage = AppStorage.getInstance();
         this.projectProcessor = null;
-        this.appStorage.loadUsers(users);
+        appStorage.loadUsers(users);
     }
 
+    /**
+     * parses the commands
+     * @return list of output nodes
+     */
     public List<ObjectNode> parseCommands() {
         List<ObjectNode> outputs = new ArrayList<>();
         for (CommandInput commandInput : commands) {

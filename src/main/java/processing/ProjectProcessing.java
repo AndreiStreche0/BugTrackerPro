@@ -14,17 +14,25 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public class ProjectProcessing {
+/**
+ * class that handles the app phase and ticket priority updating
+ */
+public final class ProjectProcessing {
     private StateSpecificActions currentState;
     private String startingDate;
     private final AppStorage appStorage;
 
-    public ProjectProcessing (String startDate) {
+    public ProjectProcessing (final String startDate) {
         this.currentState = new TestingPhaseState();
         this.startingDate = startDate;
         this.appStorage = AppStorage.getInstance();
     }
-    public void automaticUpdatePhase(String timestamp) {
+
+    /**
+     * checks for automatic phase update
+     * @param timestamp the current timestamp
+     */
+    public void automaticUpdatePhase(final String timestamp) {
         LocalDate start = LocalDate.parse(this.startingDate);
         LocalDate current = LocalDate.parse(timestamp);
 
@@ -34,7 +42,11 @@ public class ProjectProcessing {
         }
     }
 
-    public void ticketPriorityUpdate(String currentTimestamp) {
+    /**
+     * updates ticket priority for automatic time passing
+     * @param currentTimestamp current time
+     */
+    public void ticketPriorityUpdate(final String currentTimestamp) {
         LocalDate current = LocalDate.parse(currentTimestamp);
         List<Milestone> milestones = appStorage.getMilestones();
         for (Milestone milestone: milestones) {
@@ -61,19 +73,38 @@ public class ProjectProcessing {
         }
     }
 
-    public void startDevelopingPhase(String startDate) {
+    /**
+     * starts developing phase
+     * @param startDate current date
+     */
+    public void startDevelopingPhase(final String startDate) {
         this.currentState = new DevelopmentPhaseState();
         this.startingDate = startDate;
     }
-    public void startTestingPhase(String startDate) {
+
+    /**
+     * starts testing phase
+     * @param startDate current date
+     */
+    public void startTestingPhase(final String startDate) {
         this.currentState = new TestingPhaseState();
         this.startingDate = startDate;
     }
-    public void closeApp(String closingDate) {
+    /**
+     * closes app
+     */
+    public void closeApp(final String closingDate) {
         this.currentState = new ClosedPhaseState();
         this.startingDate = closingDate;
     }
-    public ObjectNode executeCommand(Command command, String timestamp) {
+
+    /**
+     * does automatic updates before executing the command
+     * @param command the command
+     * @param timestamp the timestamp
+     * @return output node of execution
+     */
+    public ObjectNode executeCommand(final Command command, final String timestamp) {
         automaticUpdatePhase(timestamp);
         ticketPriorityUpdate(timestamp);
         return currentState.executeCommand(command);

@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * abstract ticket class that holds all the common fields and methods
+ */
 public abstract class Ticket {
     private int id;
     private String title;
@@ -26,13 +29,13 @@ public abstract class Ticket {
     private TicketType type;
 
     private List<Comment> comments = new ArrayList<>();
-    private List<TicketHistory> history = new ArrayList<>();
+    private final List<TicketHistory> history = new ArrayList<>();
 
     public String getClosedAt() {
         return closedAt;
     }
 
-    public void setClosedAt(String closedAt) {
+    public void setClosedAt(final String closedAt) {
         this.closedAt = closedAt;
     }
 
@@ -44,15 +47,15 @@ public abstract class Ticket {
         return assignedAt;
     }
 
-    public void setAssignedAt(String assignedAt) {
+    public void setAssignedAt(final String assignedAt) {
         this.assignedAt = assignedAt;
     }
 
-    public void setSolvedAt(String solvedAt) {
+    public void setSolvedAt(final String solvedAt) {
         this.solvedAt = solvedAt;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(final List<Comment> comments) {
         this.comments = comments;
     }
 
@@ -60,7 +63,7 @@ public abstract class Ticket {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -68,7 +71,7 @@ public abstract class Ticket {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
@@ -80,11 +83,11 @@ public abstract class Ticket {
         return assignedTo;
     }
 
-    public void setAssignedTo(User assignedTo) {
+    public void setAssignedTo(final User assignedTo) {
         this.assignedTo = assignedTo;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -92,7 +95,7 @@ public abstract class Ticket {
         return businessPriority;
     }
 
-    public void setBusinessPriority(BusinessPriority businessPriority) {
+    public void setBusinessPriority(final BusinessPriority businessPriority) {
         this.businessPriority = businessPriority;
     }
 
@@ -100,7 +103,7 @@ public abstract class Ticket {
         return expertiseArea;
     }
 
-    public void setExpertiseArea(ExpertiseArea expertiseArea) {
+    public void setExpertiseArea(final ExpertiseArea expertiseArea) {
         this.expertiseArea = expertiseArea;
     }
 
@@ -108,7 +111,7 @@ public abstract class Ticket {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(final String createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -116,7 +119,7 @@ public abstract class Ticket {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(final String updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -124,7 +127,7 @@ public abstract class Ticket {
         return reportedBy;
     }
 
-    public void setReportedBy(String reportedBy) {
+    public void setReportedBy(final String reportedBy) {
         this.reportedBy = reportedBy;
     }
 
@@ -140,30 +143,35 @@ public abstract class Ticket {
         return type;
     }
 
-    public void setType(TicketType type) {
+    public void setType(final TicketType type) {
         this.type = type;
     }
 
-    public Ticket(String createdAt, String updatedAt) {
+    public Ticket(final String createdAt, final String updatedAt) {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
     public List<Comment> getComments() {
         return this.comments;
     }
-    public void addComment(Comment comment) {
+    public void addComment(final Comment comment) {
         this.comments.add(comment);
     }
-    public void removeComment(Comment comment) {
+    public void removeComment(final Comment comment) {
         this.comments.remove(comment);
     }
-    public void addHistory(TicketHistory historyItem) {
+    public void addHistory(final TicketHistory historyItem) {
         this.history.add(historyItem);
     }
     public List<TicketHistory> getHistory() {
         return history;
     }
-    public boolean checkExpertiseLevel(ExpertiseArea expertise) {
+
+    /**
+     * @param expertise the wanted expertise
+     * @return if the ticket has the wanted expertise
+     */
+    public boolean checkExpertiseLevel(final ExpertiseArea expertise) {
         if (expertise == ExpertiseArea.FULLSTACK) {
             return true;
         }
@@ -176,7 +184,12 @@ public abstract class Ticket {
             default -> false;
         };
     }
-    public boolean checkSeniority(Seniority seniority) {
+
+    /**
+     * @param seniority the wanted seniority
+     * @return checks if the given seniority is enough to solve the ticket
+     */
+    public boolean checkSeniority(final Seniority seniority) {
         return switch (seniority) {
             case SENIOR -> true;
             case MID -> this.businessPriority != BusinessPriority.CRITICAL;

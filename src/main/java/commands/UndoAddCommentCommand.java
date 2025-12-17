@@ -8,6 +8,9 @@ import tickets.Ticket;
 
 import java.util.List;
 
+/**
+ * undoes a previous add comment command
+ */
 public class UndoAddCommentCommand extends Command{
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -19,6 +22,11 @@ public class UndoAddCommentCommand extends Command{
         this.ticketId = ticketId;
         this.appStorage = AppStorage.getInstance();
     }
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
     private ObjectNode createErrorNode(String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "undoAddComment");
@@ -27,6 +35,11 @@ public class UndoAddCommentCommand extends Command{
         output.put("error", message);
         return output;
     }
+    /**
+     * removes the previously added comment
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
     public ObjectNode execute(boolean correctPhase) {
         Ticket ticket = appStorage.getTicket(ticketId);

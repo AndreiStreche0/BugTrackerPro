@@ -7,9 +7,19 @@ import tickets.UIFeedback;
 
 import java.util.Map;
 
+/**
+ * creates a new UI feedback ticket
+ */
 public class UIFeedbackFactory implements TicketFactory{
+    /**
+     * @param attributes all the ticket attributes given at input
+     * @param id ticket id
+     * @param timestamp timestamp of the command and ticket creation
+     * @return a new UI Feedback ticket based on given attributes
+     */
     @Override
-    public Ticket createTicket(Map<String, Object> attributes, int id, String timestamp) {
+    public Ticket createTicket(final Map<String, Object> attributes, final int id,
+                               final String timestamp) {
         UIFeedback uiFeedback= new UIFeedback(timestamp);
 
         uiFeedback.setId(id);

@@ -16,7 +16,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Milestone extends Observers {
+/**
+ * milestone class that contains the milestone parameters and methods used to handle the milestone
+ */
+public final class Milestone extends Observers {
     private String name;
     private List<String> blockingFor;
     private String dueDate;
@@ -127,6 +130,9 @@ public class Milestone extends Observers {
         return !blockers.isEmpty();
     }
 
+    /**
+     * sends notifications if the deadline is coming
+     */
     public void deadlineIsComing() {
         for (int id : this.getTicketIds()) {
             Ticket ticket = appStorage.getTicket(id);
@@ -138,6 +144,10 @@ public class Milestone extends Observers {
                 " tickets are now CRITICAL.");
     }
 
+    /**
+     * increments priority of milestone tickets
+     * @param newLastUpdateDate changes when the ticket was last updated
+     */
     public void incrementPriority(LocalDate newLastUpdateDate) {
         this.lastAutomaticUpdate = newLastUpdateDate;
         for (int id : this.getTicketIds()) {
@@ -170,6 +180,12 @@ public class Milestone extends Observers {
             }
         }
     }
+
+    /**
+     * @param ticket the ticket
+     * @param developer the developer
+     * @return if the ticket is assignable to that developer
+     */
     public boolean isTicketAssignable (Ticket ticket, Developer developer) {
         if (this.isBlocked()) {
             return false;

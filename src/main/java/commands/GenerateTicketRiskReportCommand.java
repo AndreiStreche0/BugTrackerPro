@@ -17,14 +17,22 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-public class GenerateTicketRiskReportCommand extends Command {
+/**
+ * generates the ticket risk report
+ */
+public final class GenerateTicketRiskReportCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
-    public GenerateTicketRiskReportCommand(String username, String timestamp) {
+    public GenerateTicketRiskReportCommand(final String username, final String timestamp) {
         super("generateTicketRiskReport", username, timestamp);
         this.appStorage = AppStorage.getInstance();
     }
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "generateTicketRiskReport");
         output.put("username", super.getUsername());
@@ -32,8 +40,13 @@ public class GenerateTicketRiskReportCommand extends Command {
         output.put("error", message);
         return output;
     }
+    /**
+     * generates the ticket risk report and formats the output
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         ObjectNode output = mapper.createObjectNode();
         if (user == null) {

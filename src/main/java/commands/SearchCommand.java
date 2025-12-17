@@ -16,17 +16,26 @@ import users.User;
 
 import java.util.*;
 
-public class SearchCommand extends Command{
+/**
+ * search command that returns all the developers or tickets filtered by given requirements
+ */
+public final class SearchCommand extends Command{
     private final Map<String, Object> filters;
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
-    public SearchCommand(String username, String timestamp, Map<String, Object> filters) {
+    public SearchCommand(final String username, final String timestamp,
+                         final Map<String, Object> filters) {
         super("search", username, timestamp);
         this.filters = filters;
         appStorage = AppStorage.getInstance();
     }
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "search");
         output.put("username", super.getUsername());
@@ -34,7 +43,12 @@ public class SearchCommand extends Command{
         output.put("error", message);
         return output;
     }
-    public ObjectNode execute(boolean correctPhase) {
+    /**
+     * searches the tickets or developers by given filters
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         List<Ticket> tickets = null;
         List<Developer> developers = null;
@@ -159,6 +173,11 @@ public class SearchCommand extends Command{
         }
         return outputNode;
     }
+
+    /**
+     * @param developer the developer that has the tickets
+     * @return all the available tickets for the developer
+     */
     private List<Ticket> availableTicketList(Developer developer) {
         List <Ticket> tickets = new ArrayList<>();
         for (Milestone milestone : appStorage.getMilestones()) {
@@ -173,6 +192,11 @@ public class SearchCommand extends Command{
         }
         return tickets;
     }
+
+    /**
+     * @param manager the manager who gives the command
+     * @return all the developers that are subordinates of the manager
+     */
     private List<Developer> developerList(Manager manager) {
         List <Developer> developerList = new ArrayList<>();
         for (String developerName : manager.getSubordinates()) {

@@ -14,17 +14,26 @@ import users.User;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class ViewMilestonesCommand extends Command{
+/**
+ * shows the milestones from the perspective of a developer or a manager
+ */
+public final class ViewMilestonesCommand extends Command{
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
-    public ViewMilestonesCommand(String username, String timestamp) {
+    public ViewMilestonesCommand(final String username, final String timestamp) {
         super("viewMilestones", username, timestamp);
         this.appStorage = AppStorage.getInstance();
     }
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "viewMilestones");
         output.put("username", super.getUsername());
@@ -32,8 +41,14 @@ public class ViewMilestonesCommand extends Command{
         output.put("error", message);
         return output;
     }
+
+    /**
+     * sorts and shows the milestones from the perspective of a developer or a manager
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         if (user == null) {
             return createErrorNode("The user " + super.getUsername() + " doesn't exist.");
@@ -130,12 +145,18 @@ public class ViewMilestonesCommand extends Command{
                 ObjectNode developerObject = mapper.createObjectNode();
                 developerObject.put("developer", developerName);
                 ArrayNode assignedTicketsArray = mapper.createArrayNode();
+                List<Integer> developerTicketIds = new ArrayList<>();
                 if (appStorage.findUser(developerName) != null) {
-                    List <Ticket> tickets = ((Developer)appStorage.findUser(developerName)).getAssignedTickets();
+                    Developer developer = (Developer)appStorage.findUser(developerName);
+                    List <Ticket> tickets = developer.getAssignedTickets();
                     for (Ticket ticket : tickets) {
                         if (milestone.getTicketIds().contains(ticket.getId())) {
-                            assignedTicketsArray.add(ticket.getId());
+                            developerTicketIds.add(ticket.getId());
                         }
+                    }
+                    Collections.sort(developerTicketIds);
+                    for(Integer id : developerTicketIds) {
+                        assignedTicketsArray.add(id);
                     }
                 }
                 developerObject.set("assignedTickets", assignedTicketsArray);

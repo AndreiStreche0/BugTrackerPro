@@ -18,14 +18,22 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-public class GenerateResolutionEfficiencyReport extends Command{
+/**
+ * generates resolution efficiency report
+ */
+public final class GenerateResolutionEfficiencyReport extends Command{
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
-    public GenerateResolutionEfficiencyReport(String username, String timestamp) {
+    public GenerateResolutionEfficiencyReport(final String username, final String timestamp) {
         super("generateResolutionEfficiencyReport", username, timestamp);
         this.appStorage = AppStorage.getInstance();
     }
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "generateResolutionEfficiencyReport");
         output.put("username", super.getUsername());
@@ -33,8 +41,13 @@ public class GenerateResolutionEfficiencyReport extends Command{
         output.put("error", message);
         return output;
     }
+    /**
+     * generates the resolution efficiency report and formats the output
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         ObjectNode output = mapper.createObjectNode();
         if (user == null) {

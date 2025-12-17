@@ -11,19 +11,29 @@ import users.User;
 
 import java.util.ArrayList;
 
-public class AddCommentCommand extends Command {
+/**
+ * command to add a comment for a specific ticket
+ */
+public final class AddCommentCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
-    private int ticketId;
-    private String commentString;
+    private final int ticketId;
+    private final String commentString;
 
-    public AddCommentCommand(String username, String timestamp, int ticketId, String commentString) {
+    public AddCommentCommand(final String username, final String timestamp, final int ticketId,
+                             final String commentString) {
         super("addComment", username, timestamp);
         this.appStorage = AppStorage.getInstance();
         this.ticketId = ticketId;
         this.commentString = commentString;
     }
-    private ObjectNode createErrorNode(String message) {
+
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "addComment");
         output.put("username", super.getUsername());
@@ -31,8 +41,14 @@ public class AddCommentCommand extends Command {
         output.put("error", message);
         return output;
     }
+
+    /**
+     * checks for errors and if everything is okay, creates new comment and adds it to the ticket
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         Ticket ticket = appStorage.getTicket(this.ticketId);
         if (user == null) {

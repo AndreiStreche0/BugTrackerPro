@@ -9,7 +9,15 @@ import users.Manager;
 import users.Reporter;
 import users.User;
 
+/**
+ * user factory used to create new users
+ */
 public class UserFactory {
+    /**
+     * creates a new user based on its type
+     * @param userInput the input containing user information
+     * @return the new user
+     */
     public static User createUser(UserInput userInput) {
         String userRole = userInput.getRole();
         switch (userRole) {

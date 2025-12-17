@@ -3,12 +3,14 @@ package tickets;
 import enums.BusinessValue;
 import enums.CustomerDemand;
 import enums.TicketType;
-
-public class FeatureRequest extends Ticket {
+/**
+ * FeatureRequest class that holds all the specific parameters for this ticket type
+ */
+public final class FeatureRequest extends Ticket {
     private BusinessValue businessValue;
     private CustomerDemand customerDemand;
 
-    public FeatureRequest(String createdAt) {
+    public FeatureRequest(final String createdAt) {
         super(createdAt, createdAt);
         this.setType(TicketType.FEATURE_REQUEST);
     }
@@ -17,7 +19,7 @@ public class FeatureRequest extends Ticket {
         return businessValue;
     }
 
-    public void setBusinessValue(BusinessValue businessValue) {
+    public void setBusinessValue(final BusinessValue businessValue) {
         this.businessValue = businessValue;
     }
 
@@ -25,7 +27,7 @@ public class FeatureRequest extends Ticket {
         return customerDemand;
     }
 
-    public void setCustomerDemand(CustomerDemand customerDemand) {
+    public void setCustomerDemand(final CustomerDemand customerDemand) {
         this.customerDemand = customerDemand;
     }
 }

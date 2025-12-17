@@ -10,14 +10,22 @@ import tickets.Ticket;
 import users.User;
 import milestones.Milestone;
 
-public class StartTestingPhaseCommand extends Command{
+/**
+ * command used for starting the testing phase
+ */
+public final class StartTestingPhaseCommand extends Command{
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
-    public StartTestingPhaseCommand(String username, String timestamp) {
+    public StartTestingPhaseCommand(final String username, final String timestamp) {
         super("startTestingPhase", username, timestamp);
         this.appStorage = AppStorage.getInstance();
     }
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "startTestingPhase");
         output.put("username", super.getUsername());
@@ -25,8 +33,14 @@ public class StartTestingPhaseCommand extends Command{
         output.put("error", message);
         return output;
     }
+
+    /**
+     * starts new testing phase
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         if (user == null) {
             return createErrorNode("The user " + super.getUsername() + " does not exist.");

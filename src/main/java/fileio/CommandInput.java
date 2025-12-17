@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
-
+/**
+ * class containing all the information necessary for a new command
+ */
 @Data
 @NoArgsConstructor
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)

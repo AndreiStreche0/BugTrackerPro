@@ -12,7 +12,10 @@ import users.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppStorage {
+/**
+ * class that holds all the app storage and methods for finding
+ */
+public final class AppStorage {
     private final static AppStorage INSTANCE = new AppStorage();
     private final List<Ticket> tickets = new ArrayList<>();
     private List<User> users = new ArrayList<>();
@@ -23,7 +26,12 @@ public class AppStorage {
     public static AppStorage getInstance() {
         return INSTANCE;
     }
-    public void addTicket(Ticket ticket) {
+
+    /**
+     * adds a new ticket to the ticket list
+     * @param ticket the ticket
+     */
+    public void addTicket(final Ticket ticket) {
         ticket.setId(tickets.size());
         tickets.add(ticket);
     }
@@ -33,12 +41,15 @@ public class AppStorage {
         this.milestones.clear();
         this.appPhase = null;
     }
-
     public AppPhase getAppPhase() {
         return appPhase;
     }
 
-    public Ticket getTicket(int id) {
+    /**
+     * @param id ticket id
+     * @return the ticket with given id
+     */
+    public Ticket getTicket(final int id) {
         for (Ticket ticket : this.tickets) {
             if (ticket.getId() == id) {
                 return ticket;
@@ -46,6 +57,11 @@ public class AppStorage {
         }
         return null;
     }
+
+    /**
+     * @param milestoneName the milestone name
+     * @return the milestone with the given name
+     */
     public Milestone getMilestone(String milestoneName) {
         for (Milestone milestone : this.milestones) {
             if (milestone.getName().equals(milestoneName)) {
@@ -59,6 +75,10 @@ public class AppStorage {
         this.appPhase = appPhase;
     }
 
+    /**
+     * loads all the users based on the user input given
+     * @param inputs user input list
+     */
     public void loadUsers(List<UserInput> inputs) {
         for (UserInput input : inputs) {
             User newUser = UserFactory.createUser(input);
@@ -67,6 +87,11 @@ public class AppStorage {
             }
         }
     }
+
+    /**
+     * adds new milestone to the milestone list
+     * @param milestone milestone to be added
+     */
     public void addMilestone(Milestone milestone) {
         milestones.add(milestone);
     }
@@ -74,6 +99,11 @@ public class AppStorage {
     public List<Milestone> getMilestones() {
         return milestones;
     }
+
+    /**
+     * @param ticketId the ticket id
+     * @return the milestone with the ticket corresponding with the ticket id
+     */
     public Milestone isTicketInMilestone(int ticketId) {
         for (Milestone milestone : this.milestones) {
             if (milestone.getTicketIds().contains(ticketId)) {
@@ -85,6 +115,11 @@ public class AppStorage {
     public List<Ticket> getTickets() {
         return tickets;
     }
+
+    /**
+     * @param username the user name
+     * @return the user corresponding to the name
+     */
     public User findUser(String username) {
         for (User user : this.users) {
             if (user.getUsername().equals(username)) {

@@ -6,15 +6,27 @@ import tickets.Ticket;
 import tickets.Bug;
 import tickets.UIFeedback;
 
+/**
+ * class that calculates the customer impact metric for a given ticket
+ */
 public class CustomerImpactMetric implements MetricBaseMethods{
+    /**
+     * @param ticket ticket for the metric
+     * @return if the ticket is valid for the metric calculation
+     */
     @Override
-    public boolean isTicketValid(Ticket ticket) {
+    public boolean isTicketValid(final Ticket ticket) {
         return ticket.getState() == TicketStatus.OPEN ||
                 ticket.getState() == TicketStatus.IN_PROGRESS;
     }
 
+    /**
+     * calculates base score for report
+     * @param ticket the ticket for metric
+     * @return the base score
+     */
     @Override
-    public double calculateBaseScore(Ticket ticket) {
+    public double calculateBaseScore(final Ticket ticket) {
         switch (ticket.getType()) {
             case BUG:
                 Bug bug = (Bug) ticket;
@@ -38,13 +50,16 @@ public class CustomerImpactMetric implements MetricBaseMethods{
                 return 0;
         }
     }
+    /**
+     * @param type the ticket type
+     * @return max value used for report calculation
+     */
     @Override
-    public double getMaxValue(TicketType type) {
+    public double getMaxValue(final TicketType type) {
         return switch (type) {
             case BUG -> 48.0;
-            case FEATURE_REQUEST -> 100.0;
-            case UI_FEEDBACK -> 100.0;
-            default -> 100.0;
+            case UI_FEEDBACK, FEATURE_REQUEST -> 100.0;
+            default -> 1.0;
         };
     }
 }

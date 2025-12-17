@@ -19,15 +19,23 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class GeneratePerformanceReportCommand extends Command {
+/**
+ * generates the performance report
+ */
+public final class GeneratePerformanceReportCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
-    public GeneratePerformanceReportCommand(String username, String timestamp) {
+    public GeneratePerformanceReportCommand(final String username, final String timestamp) {
         super("generatePerformanceReport", username, timestamp);
         this.appStorage = AppStorage.getInstance();
     }
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "generatePerformanceReport");
         output.put("username", super.getUsername());
@@ -41,8 +49,13 @@ public class GeneratePerformanceReportCommand extends Command {
         double variance = (Math.pow(bugCnt - avg, 2) + Math.pow(featureCnt - avg, 2) + Math.pow(UICnt - avg, 2)) / 3.0;
         return Math.sqrt(variance) / avg;
     }
+    /**
+     * generates the performance report and formats the output
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         ObjectNode output = mapper.createObjectNode();
         ArrayNode outputArray = mapper.createArrayNode();

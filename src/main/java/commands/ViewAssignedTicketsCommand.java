@@ -12,15 +12,22 @@ import users.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewAssignedTicketsCommand extends Command {
+/**
+ * shows the assigned tickets of a developer
+ */
+public final class ViewAssignedTicketsCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
-    public ViewAssignedTicketsCommand(String username, String timestamp) {
+    public ViewAssignedTicketsCommand(final String username, final String timestamp) {
         super("viewAssignedTickets", username, timestamp);
         this.appStorage = AppStorage.getInstance();
     }
-
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "viewAssignedTickets");
         output.put("username", super.getUsername());
@@ -28,9 +35,13 @@ public class ViewAssignedTicketsCommand extends Command {
         output.put("error", message);
         return output;
     }
-
+    /**
+     * sorts and shows all the assigned tickets of a developer
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         ObjectNode output = mapper.createObjectNode();
         User user = appStorage.findUser(super.getUsername());
         if (user == null) {

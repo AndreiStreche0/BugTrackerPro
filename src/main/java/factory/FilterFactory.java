@@ -15,14 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * filter factory used to create new filters for search project functions
+ */
 public class FilterFactory {
-    private final AppStorage appStorage;
-
-    public FilterFactory() {
-        this.appStorage = AppStorage.getInstance();
-    }
-
-    public static List<Filter<Ticket>> createTicketFilters(Map<String, Object> filters, Developer developer) {
+    /**
+     * creates filters for tickets
+     * @param filters all the filters to be created
+     * @param developer the developer for which they get created or null if it s a manager
+     * @return a list of filters
+     */
+    public static List<Filter<Ticket>> createTicketFilters(final Map<String, Object> filters,
+                                                           final Developer developer) {
         List<Filter<Ticket>> filterList = new ArrayList<>();
         if (filters.containsKey("businessPriority")) {
             filterList.add(new BusinessPriorityFilter(BusinessPriority.valueOf((String)
@@ -50,8 +54,12 @@ public class FilterFactory {
         }
         return filterList;
     }
-
-    public static List<Filter<Developer>> createDeveloperFilters(Map<String, Object> filters) {
+    /**
+     * creates filters for developers
+     * @param filters all the filters to be created
+     * @return a list of filters
+     */
+    public static List<Filter<Developer>> createDeveloperFilters(final Map<String, Object> filters) {
         List<Filter<Developer>> filterList = new ArrayList<>();
         if (filters.containsKey("expertiseArea")) {
             filterList.add(new ExpertiseAreaFilter((String) filters.get("expertiseArea")));
@@ -59,7 +67,13 @@ public class FilterFactory {
         if (filters.containsKey("seniority")) {
             filterList.add(new SeniorityFilter(Seniority.valueOf((String) filters.get("seniority"))));
         }
-        //TODO ADD score filters
+        if (filters.containsKey("performanceScoreAbove")) {
+            filterList.add(new PerformanceScoreAboveFilter(((double) filters.get("performanceScoreAbove"))));
+        }
+        if (filters.containsKey("performanceScoreBelow")) {
+            filterList.add(new PerformanceScoreBelowFilter(((double) filters.get("performanceScoreBelow"))));
+
+        }
         return filterList;
     }
 }

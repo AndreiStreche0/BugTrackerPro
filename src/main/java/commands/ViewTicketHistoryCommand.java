@@ -13,15 +13,23 @@ import users.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewTicketHistoryCommand extends Command{
+/**
+ * command to show the history of a ticket
+ */
+public final class ViewTicketHistoryCommand extends Command{
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
-    public ViewTicketHistoryCommand(String username, String timestamp) {
+    public ViewTicketHistoryCommand(final String username, final String timestamp) {
         super("viewTicketHistory", username, timestamp);
         this.appStorage = AppStorage.getInstance();
     }
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "viewTicketHistory");
         output.put("username", super.getUsername());
@@ -29,8 +37,13 @@ public class ViewTicketHistoryCommand extends Command{
         output.put("error", message);
         return output;
     }
+    /**
+     * sorts and shows ticket history based on the perspective of the user role of the employee
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         if (user == null) {
             return createErrorNode("The user " + super.getUsername() + " does not exist.");

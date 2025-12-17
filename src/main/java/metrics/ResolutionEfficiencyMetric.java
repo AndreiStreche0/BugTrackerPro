@@ -12,15 +12,23 @@ import java.time.temporal.ChronoUnit;
 import enums.TicketType;
 import tickets.UIFeedback;
 
-public class ResolutionEfficiencyMetric implements MetricBaseMethods {
+public final class ResolutionEfficiencyMetric implements MetricBaseMethods {
+    /**
+     * @param ticket ticket for the resolution efficiency metric
+     * @return if the ticket is valid for the metric calculation
+     */
     @Override
-    public boolean isTicketValid(Ticket ticket) {
+    public boolean isTicketValid(final Ticket ticket) {
         return ticket.getState() == TicketStatus.RESOLVED ||
                 ticket.getState() == TicketStatus.CLOSED;
     }
-
+    /**
+     * calculates base score for resolution efficiency report
+     * @param ticket the ticket for metric
+     * @return the base score
+     */
     @Override
-    public double calculateBaseScore(Ticket ticket) {
+    public double calculateBaseScore(final Ticket ticket) {
         long daysToResolve = calculateDaysToResolve(ticket);
         if (daysToResolve == 0) daysToResolve = 1; // Avoid division by zero
 
@@ -47,17 +55,25 @@ public class ResolutionEfficiencyMetric implements MetricBaseMethods {
         }
     }
 
-    private long calculateDaysToResolve(Ticket ticket) {
+    /**
+     * @param ticket the ticket used for metric
+     * @return how many days it took for it to be resolved
+     */
+    private long calculateDaysToResolve(final Ticket ticket) {
         if (ticket.getAssignedAt() == null || ticket.getSolvedAt() == null) {
+            System.out.println("This ticket has not been resolved");
             return 1;
         }
         LocalDate assignedDate = LocalDate.parse(ticket.getAssignedAt());
         LocalDate solvedDate = LocalDate.parse(ticket.getSolvedAt());
         return ChronoUnit.DAYS.between(assignedDate, solvedDate) + 1;
     }
-
+    /**
+     * @param type the ticket type
+     * @return max value used for report calculation
+     */
     @Override
-    public double getMaxValue(TicketType type) {
+    public double getMaxValue(final TicketType type) {
         return switch (type) {
             case BUG -> 70.0;
             case FEATURE_REQUEST, UI_FEEDBACK -> 20.0;

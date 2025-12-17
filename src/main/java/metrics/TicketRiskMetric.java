@@ -7,14 +7,23 @@ import tickets.FeatureRequest;
 import tickets.Ticket;
 import tickets.UIFeedback;
 
-public class TicketRiskMetric implements MetricBaseMethods{
+public final class TicketRiskMetric implements MetricBaseMethods{
+    /**
+     * @param ticket ticket for the metric
+     * @return if the ticket is valid for the metric calculation
+     */
     @Override
-    public boolean isTicketValid(Ticket ticket) {
+    public boolean isTicketValid(final Ticket ticket) {
         return ticket.getState() == TicketStatus.OPEN ||
                 ticket.getState() == TicketStatus.IN_PROGRESS;
     }
+    /**
+     * calculates base score for ticket risk report
+     * @param ticket the ticket for metric
+     * @return the base score
+     */
     @Override
-    public double calculateBaseScore(Ticket ticket) {
+    public double calculateBaseScore(final Ticket ticket) {
         switch (ticket.getType()) {
             case BUG:
                 Bug bug = (Bug) ticket;
@@ -37,14 +46,16 @@ public class TicketRiskMetric implements MetricBaseMethods{
                 return 0;
         }
     }
-
+    /**
+     * @param type the ticket type
+     * @return max value used for report calculation
+     */
     @Override
-    public double getMaxValue(TicketType type) {
-        switch (type) {
-            case BUG: return 12.0;
-            case FEATURE_REQUEST: return 20.0;
-            case UI_FEEDBACK: return 100.0;
-            default: return 100.0;
-        }
+    public double getMaxValue(final TicketType type) {
+        return switch (type) {
+            case BUG -> 12.0;
+            case FEATURE_REQUEST -> 20.0;
+            default -> 100.0;
+        };
     }
 }

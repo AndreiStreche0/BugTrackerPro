@@ -10,16 +10,16 @@ import tickets.Ticket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Developer extends User implements Observer {
-    private ExpertiseArea expertise;
-    private Seniority seniority;
-    private String hireDate;
-    private List<Ticket> assignedTickets;
-    private List<String> notifications;
+public final class Developer extends User implements Observer {
+    private final ExpertiseArea expertise;
+    private final Seniority seniority;
+    private final String hireDate;
+    private final List<Ticket> assignedTickets;
+    private final List<String> notifications;
     private double performanceScore;
 
-    public Developer(String username, String email, ExpertiseArea expertise,
-                     Seniority seniority, String hireDate) {
+    public Developer(final String username, final String email, final ExpertiseArea expertise,
+                     final Seniority seniority, final String hireDate) {
         super(username, email, UserRole.DEVELOPER);
         this.expertise = expertise;
         this.seniority = seniority;

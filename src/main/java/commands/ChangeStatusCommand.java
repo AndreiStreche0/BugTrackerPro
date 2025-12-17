@@ -13,18 +13,25 @@ import users.User;
 
 import java.time.LocalDate;
 
-public class ChangeStatusCommand extends Command {
+/**
+ * command to change the app status
+ */
+public final class ChangeStatusCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
-    private int ticketId;
+    private final int ticketId;
 
-    public ChangeStatusCommand(String username, String timestamp, int ticketId) {
+    public ChangeStatusCommand(final String username, final String timestamp, final int ticketId) {
         super("changeStatus", username, timestamp);
         this.appStorage = AppStorage.getInstance();
         this.ticketId = ticketId;
     }
-
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "changeStatus");
         output.put("username", super.getUsername());
@@ -32,8 +39,12 @@ public class ChangeStatusCommand extends Command {
         output.put("error", message);
         return output;
     }
-
-    public ObjectNode execute(boolean correctPhase) {
+    /**
+     * allows developer to change the status of their ticket
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         Ticket ticket = appStorage.getTicket(this.ticketId);
         if (user == null) {
@@ -97,6 +108,7 @@ public class ChangeStatusCommand extends Command {
                     break;
                 }
                 blockedMilestone.removeBlocker(currMilestone.getName());
+                blockedMilestone.setLastAutomaticUpdate(LocalDate.parse(super.getTimestamp()));
                 for (String developerName : blockedMilestone.getAssignedDevs()) {
                     User developer = appStorage.findUser(developerName);
                     blockedMilestone.addObserver((Developer) developer);

@@ -17,15 +17,23 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-public class AppStabilityReportCommand extends Command {
+/**
+ * command to calculate the app stability
+ */
+public final class AppStabilityReportCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
-    public AppStabilityReportCommand(String username, String timestamp) {
+    public AppStabilityReportCommand(final String username, final String timestamp) {
         super("appStabilityReport", username, timestamp);
         this.appStorage = AppStorage.getInstance();
     }
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "generateResolutionEfficiencyReport");
         output.put("username", super.getUsername());
@@ -33,8 +41,13 @@ public class AppStabilityReportCommand extends Command {
         output.put("error", message);
         return output;
     }
+    /**
+     * calculates the app stability report and formates the output node
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         ObjectNode output = mapper.createObjectNode();
         if (user == null) {
@@ -135,7 +148,13 @@ public class AppStabilityReportCommand extends Command {
         }
         return output;
     }
-    public String getRiskCategory(double score) {
+
+    /**
+     * helper method that determines the risk category
+     * @param score the score
+     * @return the string corresponding with that risk category
+     */
+    private String getRiskCategory(final double score) {
         if (score <= 24) {
             return "NEGLIGIBLE";
         } else if (score <= 49) {

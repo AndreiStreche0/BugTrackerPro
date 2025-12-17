@@ -3,18 +3,35 @@ package notifications;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * class used to send notifications
+ */
 public abstract class Observers {
     private final List<Observer> observers = new ArrayList<>();
-    public void addObserver(Observer observer) {
+
+    /**
+     * adds a new observer
+     * @param observer the observer
+     */
+    public void addObserver(final Observer observer) {
         if (!observers.contains(observer)) {
             observers.add(observer);
         }
     }
-    public void removeObserver(Observer observer) {
+
+    /**
+     * removes an observer
+     * @param observer the observer
+     */
+    public void removeObserver(final Observer observer) {
         observers.remove(observer);
     }
 
-    public void sendNotifications(String message) {
+    /**
+     * sends notification too all the observers
+     * @param message the message used for notification
+     */
+    public void sendNotifications(final String message) {
         for (Observer observer : observers) {
             observer.update(message);
         }

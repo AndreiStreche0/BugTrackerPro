@@ -14,7 +14,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
-public class CreateMilestoneCommand extends Command {
+/**
+ * creates a new milestone for the app
+ */
+public final class CreateMilestoneCommand extends Command {
     private final String name;
     private final String dueDate;
     private final List<String> blockingFor;
@@ -23,9 +26,10 @@ public class CreateMilestoneCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
-    public CreateMilestoneCommand(String username, String timestamp, List<String> blockingFor,
-                                  List<Integer> ticketIds, List<String> assignedDevs,
-                                  String dueDate, String name) {
+    public CreateMilestoneCommand(final String username, final String timestamp,
+                                  final List<String> blockingFor, final List<Integer> ticketIds,
+                                  final List<String> assignedDevs, final String dueDate,
+                                  final String name) {
         super("createMilestone", username, timestamp);
         this.blockingFor = blockingFor;
         this.ticketIds = ticketIds;
@@ -34,7 +38,12 @@ public class CreateMilestoneCommand extends Command {
         this.dueDate = dueDate;
         this.name = name;
     }
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "createMilestone");
         output.put("username", super.getUsername());
@@ -42,8 +51,13 @@ public class CreateMilestoneCommand extends Command {
         output.put("error", message);
         return output;
     }
+    /**
+     * allows manager to create a new milestone for the app
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         if (user == null) {
             return createErrorNode("The user " + super.getUsername() + " doesn't exist.");

@@ -29,7 +29,7 @@ public class App {
      * @param inputPath path to the input file containing commands
      * @param outputPath path to the file where results should be written
      */
-    public static void run(String inputPath, String outputPath) {
+    public static void run(final String inputPath, final String outputPath) {
         // feel free to change this if needed (however keep 'outputs' variable name to be used for writing)
 
         List<ObjectNode> outputs = new ArrayList<>();

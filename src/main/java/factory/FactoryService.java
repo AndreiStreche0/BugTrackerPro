@@ -4,6 +4,9 @@ import tickets.Ticket;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * class to create the factories and manage the factory design pattern
+ */
 public class FactoryService {
 
     private static final FactoryService INSTANCE = new FactoryService();
@@ -24,7 +27,16 @@ public class FactoryService {
     public void reset() {
         this.id = 0;
     }
-    public Ticket createTicket(String type, Map<String, Object> attributes, String timestamp) {
+
+    /**
+     * creates a new ticket
+     * @param type the ticket type
+     * @param attributes the ticket attributes
+     * @param timestamp ticket creation time
+     * @return the new ticket
+     */
+    public Ticket createTicket(final String type, final Map<String, Object> attributes,
+                               final String timestamp) {
         TicketFactory factory = ticketFactories.get(type);
 
         if (factory == null) {

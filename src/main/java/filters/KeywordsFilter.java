@@ -4,15 +4,22 @@ import tickets.Ticket;
 
 import java.util.List;
 
+/**
+ * checks if the keywords match with the ticket
+ */
 public class KeywordsFilter implements Filter <Ticket> {
     private final List<String> keywords;
 
-    public KeywordsFilter(List<String> keywords) {
+    public KeywordsFilter(final List<String> keywords) {
         this.keywords = keywords;
     }
-
+    /**
+     * checks if any keyword matches with the ticket description or title
+     * @param ticket the ticket that is being filtered
+     * @return true if the ticket passed the filter
+     */
     @Override
-    public boolean filter(Ticket ticket) {
+    public boolean filter(final Ticket ticket) {
         if (keywords == null) {
             return true;
         }

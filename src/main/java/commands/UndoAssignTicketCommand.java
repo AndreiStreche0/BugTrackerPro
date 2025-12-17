@@ -9,18 +9,27 @@ import tickets.TicketHistory;
 import users.Developer;
 import users.User;
 
-public class UndoAssignTicketCommand extends Command {
+/**
+ * undoes a previous assign ticket command
+ */
+public final class UndoAssignTicketCommand extends Command {
     private final int ticketId;
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
-    public UndoAssignTicketCommand(String username, String timestamp, int ticketId) {
+    public UndoAssignTicketCommand(final String username, final String timestamp,
+                                   final int ticketId) {
         super("undoAssignTicket", username, timestamp);
         this.ticketId = ticketId;
         this.appStorage = AppStorage.getInstance();
     }
+    /**
+     * removes the previously assigned ticket the assigned tickets of that developer
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         Ticket ticket = appStorage.getTicket(ticketId);
         ObjectNode output = mapper.createObjectNode();
@@ -32,7 +41,7 @@ public class UndoAssignTicketCommand extends Command {
             output.put("error", "Only IN_PROGRESS tickets can be unassigned.");
             return output;
         }
-        TicketHistory history = TicketHistory.deAssigned(super.getUsername(), super.getTimestamp());
+        TicketHistory history = TicketHistory.deAssign(super.getUsername(), super.getTimestamp());
         ticket.addHistory(history);
         ((Developer) user).removeAssignedTicket(ticket);
         ticket.setAssignedAt("");

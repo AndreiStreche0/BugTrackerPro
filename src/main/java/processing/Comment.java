@@ -1,11 +1,13 @@
 package processing;
-
-public class Comment {
+/**
+ * comment class that holds comment content, creation time and author
+ */
+public final class Comment {
     private String author;
     private String content;
     private String createdAt;
 
-    public Comment(String author, String content, String createdAt) {
+    public Comment(final String author, final String content, final String createdAt) {
         this.author = author;
         this.content = content;
         this.createdAt = createdAt;
@@ -15,7 +17,7 @@ public class Comment {
         return author;
     }
 
-    public void setaAthor(String author) {
+    public void setAuthor(final String author) {
         this.author = author;
     }
 
@@ -23,7 +25,7 @@ public class Comment {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(final String content) {
         this.content = content;
     }
 
@@ -31,7 +33,7 @@ public class Comment {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(final String createdAt) {
         this.createdAt = createdAt;
     }
 }

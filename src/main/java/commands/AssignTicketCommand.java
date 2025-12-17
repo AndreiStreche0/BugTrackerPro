@@ -13,9 +13,11 @@ import users.User;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-public class AssignTicketCommand extends Command {
+/**
+ * command to asign ticket
+ */
+public final class AssignTicketCommand extends Command {
     private final int ticketId;
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
@@ -24,7 +26,11 @@ public class AssignTicketCommand extends Command {
         this.ticketId = ticketId;
         this.appStorage = AppStorage.getInstance();
     }
-
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
     private ObjectNode createErrorNode(String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "assignTicket");
@@ -34,6 +40,11 @@ public class AssignTicketCommand extends Command {
         return output;
     }
 
+    /**
+     * assigns ticket to the developer
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
     @Override
     public ObjectNode execute(boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
@@ -79,7 +90,7 @@ public class AssignTicketCommand extends Command {
                     + currentMilestone.getName() + ".");
         }
 
-        TicketHistory history = TicketHistory.assigned(super.getUsername(), super.getTimestamp());
+        TicketHistory history = TicketHistory.assign(super.getUsername(), super.getTimestamp());
         ticket.addHistory(history);
         history = TicketHistory.statusChanged(ticket.getState().toString(),
                 TicketStatus.IN_PROGRESS.toString(), super.getUsername(), super.getTimestamp());
@@ -90,6 +101,12 @@ public class AssignTicketCommand extends Command {
         developer.addAssignedTicket(ticket);
         return null;
     }
+
+    /**
+     * helper function for output in case of wrong expertise
+     * @param ticket that can't be assigned
+     * @return the string containing correct expertise
+     */
     private String errorExpertiseString (Ticket ticket) {
         List<String> requiredAreas = new ArrayList<>();
         for (ExpertiseArea expertise : ExpertiseArea.values()) {
@@ -107,7 +124,12 @@ public class AssignTicketCommand extends Command {
         }
         return outputString.toString();
     }
-    public String errorSeniorityString (Ticket ticket) {
+    /**
+     * helper function for output in case of wrong seniority
+     * @param ticket that can't be assigned
+     * @return the string containing correct seniority
+     */
+    private String errorSeniorityString (Ticket ticket) {
         List<String> requiredLevels = new ArrayList<>();
         for (Seniority seniority : Seniority.values()) {
             if (ticket.checkSeniority(seniority)) {

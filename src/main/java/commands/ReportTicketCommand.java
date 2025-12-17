@@ -15,20 +15,28 @@ import users.User;
 import java.util.List;
 import java.util.Map;
 
-public class ReportTicketCommand extends Command{
+/**
+ * command used for reporting a ticket
+ */
+public final class ReportTicketCommand extends Command{
     private final Map<String, Object> ticketParameters;
     private final FactoryService ticketService;
     private final ObjectMapper mapper;
-    private AppStorage appStorage;
-    public ReportTicketCommand(String username, String timestamp, Map<String, Object> params) {
+    private final AppStorage appStorage;
+    public ReportTicketCommand(final String username, final String timestamp,
+                               final Map<String, Object> params) {
         super("reportTicket", username, timestamp);
         this.ticketParameters = params;
         this.ticketService = FactoryService.getInstance();
         this.mapper = new ObjectMapper();
         this.appStorage = AppStorage.getInstance();
     }
-
-    private ObjectNode createErrorNode(String message) {
+    /**
+     * creates error node for json output
+     * @param message the string used for the node
+     * @return the ObjectNode output
+     */
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "reportTicket");
         output.put("username", super.getUsername());
@@ -36,8 +44,12 @@ public class ReportTicketCommand extends Command{
         output.put("error", message);
         return output;
     }
-
-    public ObjectNode execute(boolean correctPhase) {
+    /**
+     * reports a ticket
+     * @param correctPhase says if the command can be done in this phase
+     * @return the output node
+     */
+    public ObjectNode execute(final boolean correctPhase) {
         Ticket newTicket = ticketService.createTicket((String) ticketParameters.get("type"),
                 ticketParameters, super.getTimestamp());
         ObjectNode output = mapper.createObjectNode();

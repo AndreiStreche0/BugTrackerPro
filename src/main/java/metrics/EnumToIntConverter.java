@@ -6,8 +6,15 @@ import enums.CustomerDemand;
 import enums.Frequency;
 import enums.Severity;
 
-public class EnumToIntConverter {
-    public static int businessValueToInt(BusinessValue value) {
+/**
+ * converts enum values to int value based on report formulas
+ */
+public final class EnumToIntConverter {
+    /**
+     * @param value the business value
+     * @return the int corespondent
+     */
+    public static int businessValueToInt(final BusinessValue value) {
         return switch (value) {
             case S -> 1;
             case M -> 3;
@@ -15,7 +22,11 @@ public class EnumToIntConverter {
             case XL -> 10;
         };
     }
-    public static int frequencyToInt(Frequency frequency) {
+    /**
+     * @param frequency the frequency
+     * @return the int corespondent
+     */
+    public static int frequencyToInt(final Frequency frequency) {
         return switch (frequency) {
             case RARE -> 1;
             case OCCASIONAL -> 2;
@@ -23,6 +34,10 @@ public class EnumToIntConverter {
             case ALWAYS -> 4;
         };
     }
+    /**
+     * @param demand the customer demand
+     * @return the int corespondent
+     */
     public static int customerDemandToInt(CustomerDemand demand) {
         return switch (demand) {
             case LOW -> 2;
@@ -31,6 +46,10 @@ public class EnumToIntConverter {
             case VERY_HIGH -> 8;
         };
     }
+    /**
+     * @param priority the priority
+     * @return the int corespondent
+     */
     public static int priorityToInt(BusinessPriority priority) {
         return switch (priority) {
             case LOW -> 1;
@@ -39,6 +58,10 @@ public class EnumToIntConverter {
             case CRITICAL -> 4;
         };
     }
+    /**
+     * @param severity the severity
+     * @return the int corespondent
+     */
     public static int severityToInt(Severity severity) {
         return switch (severity) {
             case MINOR -> 1;

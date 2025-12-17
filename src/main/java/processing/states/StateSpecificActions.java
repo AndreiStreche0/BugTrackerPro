@@ -6,7 +6,7 @@ import enums.AppPhase;
 import fileio.CommandInput;
 
 public interface StateSpecificActions {
-    ObjectNode executeCommand(Command command);
-    boolean canExecuteThisPhase(String commandName);
+    ObjectNode executeCommand(final Command command);
+    boolean canExecuteThisPhase(final String commandName);
     AppPhase getPhase();
 }

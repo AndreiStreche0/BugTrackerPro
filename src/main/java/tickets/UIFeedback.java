@@ -2,15 +2,17 @@ package tickets;
 
 import enums.BusinessValue;
 import enums.TicketType;
-
-public class UIFeedback extends Ticket {
+/**
+ * UIFeedback class that holds all the specific parameters for this ticket type
+ */
+public final class UIFeedback extends Ticket {
     private String uiElementId;
     private BusinessValue businessValue;
     private int usabilityScore;
     private String screenshotUrl;
     private String suggestedFix;
 
-    public UIFeedback(String createdAt) {
+    public UIFeedback(final String createdAt) {
         super(createdAt, createdAt);
         this.setType(TicketType.UI_FEEDBACK);
     }
@@ -19,7 +21,7 @@ public class UIFeedback extends Ticket {
         return uiElementId;
     }
 
-    public void setUiElementId(String uiElementId) {
+    public void setUiElementId(final String uiElementId) {
         this.uiElementId = uiElementId;
     }
 
@@ -27,7 +29,7 @@ public class UIFeedback extends Ticket {
         return businessValue;
     }
 
-    public void setBusinessValue(BusinessValue businessValue) {
+    public void setBusinessValue(final BusinessValue businessValue) {
         this.businessValue = businessValue;
     }
 
@@ -35,7 +37,7 @@ public class UIFeedback extends Ticket {
         return usabilityScore;
     }
 
-    public void setUsabilityScore(int usabilityScore) {
+    public void setUsabilityScore(final int usabilityScore) {
         this.usabilityScore = usabilityScore;
     }
 
@@ -43,7 +45,7 @@ public class UIFeedback extends Ticket {
         return screenshotUrl;
     }
 
-    public void setScreenshotUrl(String screenshotUrl) {
+    public void setScreenshotUrl(final String screenshotUrl) {
         this.screenshotUrl = screenshotUrl;
     }
 
@@ -51,7 +53,7 @@ public class UIFeedback extends Ticket {
         return suggestedFix;
     }
 
-    public void setSuggestedFix(String suggestedFix) {
+    public void setSuggestedFix(final String suggestedFix) {
         this.suggestedFix = suggestedFix;
     }
 }

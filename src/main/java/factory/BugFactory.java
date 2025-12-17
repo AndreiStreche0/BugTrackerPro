@@ -6,10 +6,19 @@ import tickets.Ticket;
 
 import java.util.Map;
 
+/**
+ * factory class to create a bug ticket
+ */
 public class BugFactory implements TicketFactory {
-
+    /**
+     * @param attributes all the ticket attributes given at input
+     * @param id ticket id
+     * @param timestamp timestamp of the command and ticket creation
+     * @return a new Bug ticket based on given attributes
+     */
     @Override
-    public Ticket createTicket(Map<String, Object> attributes, int id, String timestamp) {
+    public Ticket createTicket(final Map<String, Object> attributes, final int id,
+                               final String timestamp) {
         Bug bug = new Bug(timestamp);
 
         bug.setId(id);
@@ -25,10 +34,6 @@ public class BugFactory implements TicketFactory {
         bug.setActualBehavior((String) attributes.get("actualBehavior"));
         bug.setFrequency(Frequency.valueOf((String) attributes.get("frequency")));
         bug.setSeverity(Severity.valueOf((String) attributes.get("severity")));
-//        if ("".equals(attributes.get("reportedBy"))) {
-//            bug.setReportedBy("ANONYMOUS");
-//            bug.setBusinessPriority(BusinessPriority.LOW);
-//        }
         bug.setCreatedAt(timestamp);
 
         if (attributes.containsKey("environment")) {
