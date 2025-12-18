@@ -9,12 +9,11 @@ import processing.Comment;
 import tickets.Ticket;
 import users.User;
 
-import java.util.ArrayList;
-
 /**
  * command to add a comment for a specific ticket
  */
 public final class AddCommentCommand extends Command {
+    private static final int LENGTH_THRESHOLD = 10;
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
     private final int ticketId;
@@ -55,8 +54,8 @@ public final class AddCommentCommand extends Command {
             return createErrorNode("The user " + super.getUsername() + " does not exist.");
         }
         if (user.getRole() == UserRole.MANAGER) {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role DEVELOPER, REPORTER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role DEVELOPER, REPORTER; user role " + user.getRole() + ".");
         }
         if (ticket == null) {
             return null;
@@ -64,15 +63,15 @@ public final class AddCommentCommand extends Command {
         if (ticket.getReportedBy() == null || ticket.getReportedBy().isEmpty()) {
             return createErrorNode("Comments are not allowed on anonymous tickets.");
         }
-        if (commentString == null || commentString.length() < 10) {
+        if (commentString == null || commentString.length() < LENGTH_THRESHOLD) {
             return createErrorNode("Comment must be at least 10 characters long.");
         }
         switch (user.getRole()) {
             case UserRole.DEVELOPER:
-                if (ticket.getAssignedTo() == null ||
-                        !ticket.getAssignedTo().getUsername().equals(user.getUsername())) {
-                    return createErrorNode("Ticket " + ticket.getId() + " is not assigned to" +
-                            " the developer " + user.getUsername() + ".");
+                if (ticket.getAssignedTo() == null
+                        || !ticket.getAssignedTo().getUsername().equals(user.getUsername())) {
+                    return createErrorNode("Ticket " + ticket.getId() + " is not assigned to"
+                            + " the developer " + user.getUsername() + ".");
                 }
                 break;
             case UserRole.REPORTER:
@@ -80,8 +79,8 @@ public final class AddCommentCommand extends Command {
                     return createErrorNode("Reporters cannot comment on CLOSED tickets.");
                 }
                 if (!ticket.getReportedBy().equals(user.getUsername())) {
-                    return createErrorNode("Reporter " + user.getUsername() +
-                            " cannot comment on ticket " + ticketId + ".");
+                    return createErrorNode("Reporter " + user.getUsername()
+                            + " cannot comment on ticket " + ticketId + ".");
                 }
                 break;
             default:

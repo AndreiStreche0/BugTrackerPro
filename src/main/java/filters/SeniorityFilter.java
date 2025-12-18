@@ -1,7 +1,6 @@
 package filters;
 
 import enums.Seniority;
-import tickets.Ticket;
 import users.Developer;
 
 /**

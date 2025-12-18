@@ -17,10 +17,15 @@ import java.util.List;
  * main.App represents the main application logic that processes input commands,
  * generates outputs, and writes them to a file
  */
-public class App {
-    private static final String inputUserFile = "input/database/users.json";
+public final class App {
+    private App() {
+        throw new UnsupportedOperationException("This is a utility class and can't be"
+                + " instantiated");
+    }
+    private static final String USER_FILE = "input/database/users.json";
 
-    private static final ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+    private static final ObjectWriter WRITER = new ObjectMapper().writer().
+            withDefaultPrettyPrinter();
 
     /**
      * Runs the application: reads commands from an input file,
@@ -30,11 +35,9 @@ public class App {
      * @param outputPath path to the file where results should be written
      */
     public static void run(final String inputPath, final String outputPath) {
-        // feel free to change this if needed (however keep 'outputs' variable name to be used for writing)
-
         List<ObjectNode> outputs = new ArrayList<>();
         processing.AppStorage.getInstance().reset();
-        factory.FactoryService.getInstance().reset();
+        factories.FactoryService.getInstance().reset();
 
         /*
             TODO 1 :
@@ -43,7 +46,7 @@ public class App {
             however you can use some of the more advanced features of
             jackson library, available here: https://www.baeldung.com/jackson-annotations
         */
-        InputLoader loader = new InputLoader(inputPath);
+        InputLoader loader = new InputLoader(inputPath, USER_FILE);
         List<UserInput> users = loader.getUsers();
         List<CommandInput> commands = loader.getCommands();
         Brain appBrain = new Brain(commands, users);
@@ -55,7 +58,7 @@ public class App {
         try {
             File outputFile = new File(outputPath);
             outputFile.getParentFile().mkdirs();
-            writer.withDefaultPrettyPrinter().writeValue(outputFile, outputs);
+            WRITER.withDefaultPrettyPrinter().writeValue(outputFile, outputs);
         } catch (IOException e) {
             System.out.println("error writing to output file: " + e.getMessage());
         }

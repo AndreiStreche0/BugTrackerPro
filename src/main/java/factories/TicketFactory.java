@@ -1,4 +1,4 @@
-package factory;
+package factories;
 
 import tickets.Ticket;
 
@@ -14,6 +14,5 @@ public interface TicketFactory {
      * @param timestamp ticket creation time
      * @return the new ticket
      */
-    Ticket createTicket(final Map<String, Object> attributes, final int id,
-                        final String timestamp);
+    Ticket createTicket(Map<String, Object> attributes, int id, String timestamp);
 }

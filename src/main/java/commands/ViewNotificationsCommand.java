@@ -45,8 +45,8 @@ public final class ViewNotificationsCommand extends Command {
         }
         User user = appStorage.findUser(super.getUsername());
         if (user.getRole() != UserRole.DEVELOPER) {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role DEVELOPER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role DEVELOPER; user role " + user.getRole() + ".");
         }
         Developer developer = (Developer) user;
         output.put("command", "viewNotifications");

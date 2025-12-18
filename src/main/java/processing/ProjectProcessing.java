@@ -8,7 +8,6 @@ import processing.states.ClosedPhaseState;
 import processing.states.DevelopmentPhaseState;
 import processing.states.StateSpecificActions;
 import processing.states.TestingPhaseState;
-import tickets.Ticket;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -18,11 +17,13 @@ import java.util.List;
  * class that handles the app phase and ticket priority updating
  */
 public final class ProjectProcessing {
+    private static final int MIN_NUMBER_DAYS = 12;
+    private static final int AVG_DIVIDER = 3;
     private StateSpecificActions currentState;
     private String startingDate;
     private final AppStorage appStorage;
 
-    public ProjectProcessing (final String startDate) {
+    public ProjectProcessing(final String startDate) {
         this.currentState = new TestingPhaseState();
         this.startingDate = startDate;
         this.appStorage = AppStorage.getInstance();
@@ -37,7 +38,7 @@ public final class ProjectProcessing {
         LocalDate current = LocalDate.parse(timestamp);
 
         int daysBetween = (int) ChronoUnit.DAYS.between(start, current) + 1;
-        if (daysBetween >= 12 && currentState.getPhase() == AppPhase.TESTING_PHASE) {
+        if (daysBetween >= MIN_NUMBER_DAYS && currentState.getPhase() == AppPhase.TESTING_PHASE) {
             this.startDevelopingPhase(timestamp);
         }
     }
@@ -52,22 +53,23 @@ public final class ProjectProcessing {
         for (Milestone milestone: milestones) {
             LocalDate dueDate = LocalDate.parse(milestone.getDueDate());
             LocalDate lastChange = milestone.getLastAutomaticUpdate();
-            if (!milestone.isBlocked() && current.isEqual(dueDate.minusDays(1)) &&
-                    lastChange.isBefore(dueDate.minusDays(1)) && !milestone.isWarnedOfDeadline()) {
+            if (!milestone.isBlocked() && current.isEqual(dueDate.minusDays(1))
+                    && lastChange.isBefore(dueDate.minusDays(1))
+                    && !milestone.isWarnedOfDeadline()) {
                 milestone.deadlineIsComing();
                 milestone.setWarnedOfDeadline(true);
             }
 
             int daysSinceCreationCurrent = (int) ChronoUnit.DAYS.between(lastChange, current) + 1;
-            int increments = Math.max(0, daysSinceCreationCurrent / 3);
-            LocalDate newUpdateDate = current.minusDays(daysSinceCreationCurrent % 3);
+            int increments = Math.max(0, daysSinceCreationCurrent / AVG_DIVIDER);
+            LocalDate newUpdateDate = current.minusDays(daysSinceCreationCurrent % AVG_DIVIDER);
             for (int k = 0; k < increments; k++) {
                 if (!milestone.isBlocked()) {
                     milestone.incrementPriority(newUpdateDate);
                 }
             }
             if (increments > 0) {
-                LocalDate newLastUpdate = lastChange.plusDays(increments * 3);
+                LocalDate newLastUpdate = lastChange.plusDays(increments * AVG_DIVIDER);
                 milestone.setLastAutomaticUpdate(newLastUpdate);
             }
         }

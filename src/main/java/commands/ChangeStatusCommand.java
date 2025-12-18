@@ -51,16 +51,16 @@ public final class ChangeStatusCommand extends Command {
             return createErrorNode("The user " + super.getUsername() + " does not exist.");
         }
         if (user.getRole() != UserRole.DEVELOPER) {
-            return createErrorNode("The user does not have permission to execute this command: " +
-                    "required role DEVELOPER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command: "
+                    + "required role DEVELOPER; user role " + user.getRole() + ".");
         }
         if (ticket == null) {
             return null;
         }
-        if (ticket.getAssignedTo() == null ||
-                !ticket.getAssignedTo().getUsername().equals(user.getUsername())) {
-            return createErrorNode("Ticket " + ticketId + " is not assigned to developer " +
-                    user.getUsername() + ".");
+        if (ticket.getAssignedTo() == null
+                || !ticket.getAssignedTo().getUsername().equals(user.getUsername())) {
+            return createErrorNode("Ticket " + ticketId + " is not assigned to developer "
+                    + user.getUsername() + ".");
         }
         TicketStatus newState = null;
         switch (ticket.getState()) {
@@ -84,7 +84,7 @@ public final class ChangeStatusCommand extends Command {
         }
         return null;
     }
-    private void unblockMilestones(Ticket ticket) {
+    private void unblockMilestones(final Ticket ticket) {
         Milestone currMilestone = null;
         for (Milestone milestone : appStorage.getMilestones()) {
             if (milestone.getTicketIds().contains(ticket.getId())) {
@@ -117,11 +117,13 @@ public final class ChangeStatusCommand extends Command {
                 LocalDate current = LocalDate.parse(super.getTimestamp());
 
                 if (current.isAfter(dueDate)) {
-                    blockedMilestone.sendNotifications("Milestone " + blockedMilestone.getName() +
-                            " was unblocked after due date. All active tickets are now CRITICAL.");
+                    blockedMilestone.sendNotifications("Milestone " + blockedMilestone.getName()
+                            + " was unblocked after due date. All active tickets are now"
+                            + " CRITICAL.");
                 } else {
-                    blockedMilestone.sendNotifications("Milestone " + blockedMilestone.getName() +
-                            " is now unblocked as ticket " + ticket.getId() + " has been CLOSED.");
+                    blockedMilestone.sendNotifications("Milestone " + blockedMilestone.getName()
+                            + " is now unblocked as ticket " + ticket.getId() + " has been"
+                            + " CLOSED.");
                 }
             }
         }

@@ -21,16 +21,17 @@ public final class InputLoader {
      * loads the command and user input
      * @param inputPath the file path
      */
-    public InputLoader(final String inputPath) {
+    public InputLoader(final String inputPath, final String userFile) {
         ObjectMapper mapper = new ObjectMapper();
         List<CommandInput> commandsList = new ArrayList<>();
         List<UserInput> usersList = new ArrayList<>();
 
         try {
-            CommandInput[] commandArray = mapper.readValue(new File(inputPath), CommandInput[].class);
+            CommandInput[] commandArray
+                    = mapper.readValue(new File(inputPath), CommandInput[].class);
             commandsList = Arrays.asList(commandArray);
 
-            File usersFile = new File("input/database/users.json");
+            File usersFile = new File(userFile);
             UserInput[] userArray = mapper.readValue(usersFile, UserInput[].class);
             usersList = Arrays.asList(userArray);
         } catch (IOException e) {

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * checks if the keywords match with the ticket
  */
-public class KeywordsFilter implements Filter <Ticket> {
+public class KeywordsFilter implements Filter<Ticket> {
     private final List<String> keywords;
 
     public KeywordsFilter(final List<String> keywords) {
@@ -28,8 +28,8 @@ public class KeywordsFilter implements Filter <Ticket> {
             if (ticket.getDescription() != null) {
                 description = ticket.getDescription();
             }
-            if (ticket.getTitle().toLowerCase().contains(keyword) ||
-                    description.contains(keyword)) {
+            if (ticket.getTitle().toLowerCase().contains(keyword)
+                    || description.contains(keyword)) {
                 return true;
             }
         }

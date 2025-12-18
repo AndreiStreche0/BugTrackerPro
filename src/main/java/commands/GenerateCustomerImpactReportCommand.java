@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * generates the customer impact report
  */
-public final class GenerateCustomerImpactReportCommand extends Command{
+public final class GenerateCustomerImpactReportCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
     public GenerateCustomerImpactReportCommand(final String username, final String timestamp) {
@@ -52,8 +52,8 @@ public final class GenerateCustomerImpactReportCommand extends Command{
             return createErrorNode("The user " + super.getUsername() + " does not exist.");
         }
         if (user.getRole() != UserRole.MANAGER) {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role MANAGER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role MANAGER; user role " + user.getRole() + ".");
         }
         MetricBaseMethods report = new CustomerImpactMetric();
         Map<TicketType, Integer> ticketsByType = new EnumMap<>(TicketType.class);

@@ -9,14 +9,19 @@ public enum ExpertiseArea {
     DEVOPS("DevOps");
 
     private final String name;
-    ExpertiseArea(String name) {
+    ExpertiseArea(final String name) {
         this.name = name;
     }
 
     public String getName() {
         return name;
     }
-    public static ExpertiseArea getType(String name) {
+
+    /**
+     * @param name string form of expertise
+     * @return the expertise type
+     */
+    public static ExpertiseArea getType(final String name) {
         for (ExpertiseArea expertise : ExpertiseArea.values()) {
             if (expertise.name.equalsIgnoreCase(name)) {
                 return expertise;

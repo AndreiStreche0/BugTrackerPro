@@ -34,6 +34,11 @@ public final class UndoChangeStatusCommand extends Command {
         return output;
     }
 
+    /**
+     * reverses previous change status command
+     * @param correctPhase says if the command can be executed in that phase
+     * @return output node
+     */
     public ObjectNode execute(final boolean correctPhase) {
         User user = appStorage.findUser(super.getUsername());
         Ticket ticket = appStorage.getTicket(this.ticketId);
@@ -41,16 +46,16 @@ public final class UndoChangeStatusCommand extends Command {
             return createErrorNode("The user " + super.getUsername() + " does not exist.");
         }
         if (user.getRole() != UserRole.DEVELOPER) {
-            return createErrorNode("The user does not have permission to execute this command: " +
-                    "required role DEVELOPER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command: "
+                    + "required role DEVELOPER; user role " + user.getRole() + ".");
         }
         if (ticket == null) {
             return null;
         }
-        if (ticket.getAssignedTo() == null ||
-                !ticket.getAssignedTo().getUsername().equals(user.getUsername())) {
-            return createErrorNode("Ticket " + ticketId + " is not assigned to developer " +
-                    user.getUsername() + ".");
+        if (ticket.getAssignedTo() == null
+                || !ticket.getAssignedTo().getUsername().equals(user.getUsername())) {
+            return createErrorNode("Ticket " + ticketId + " is not assigned to developer "
+                    + user.getUsername() + ".");
         }
         TicketStatus newState = null;
         switch (ticket.getState()) {

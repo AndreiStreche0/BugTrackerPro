@@ -20,7 +20,8 @@ import java.util.List;
 /**
  * shows the milestones from the perspective of a developer or a manager
  */
-public final class ViewMilestonesCommand extends Command{
+public final class ViewMilestonesCommand extends Command {
+    private static final double ROUNDER = 100.0;
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
@@ -69,7 +70,9 @@ public final class ViewMilestonesCommand extends Command{
         }
         viewableMilestones.sort((m1, m2) -> {
             int dateComp = m1.getDueDate().compareTo(m2.getDueDate());
-            if (dateComp != 0) return dateComp;
+            if (dateComp != 0) {
+                return dateComp;
+            }
             return m1.getName().compareTo(m2.getName());
         });
         ObjectNode output = mapper.createObjectNode();
@@ -92,34 +95,37 @@ public final class ViewMilestonesCommand extends Command{
             outputNode.set("assignedDevs", devsNode);
             outputNode.put("createdBy", milestone.getCreatedBy());
 
-            int cnt_opened = 0, cnt_closed = 0;
+            int cntOpened = 0, cntClosed = 0;
             List<Integer> openTickets = new ArrayList<>();
             List<Integer> closedTickets = new ArrayList<>();
             for (int ticketId : milestone.getTicketIds()) {
                 TicketStatus ticketState = appStorage.getTicket(ticketId).getState();
                 if (ticketState == TicketStatus.CLOSED) {
-                    cnt_closed++;
-                    if (LocalDate.parse(appStorage.getTicket(ticketId).getClosedAt()).isAfter(latestClosing)) {
-                        latestClosing = LocalDate.parse(appStorage.getTicket(ticketId).getClosedAt());
+                    cntClosed++;
+                    if (LocalDate.parse(appStorage.getTicket(ticketId).getClosedAt()).
+                            isAfter(latestClosing)) {
+                        latestClosing = LocalDate.parse(appStorage.getTicket(ticketId).
+                                getClosedAt());
                     }
                     closedTickets.add(ticketId);
                 } else {
-                    cnt_opened++;
+                    cntOpened++;
                     openTickets.add(ticketId);
                 }
             } if (milestone.getTicketIds().isEmpty()) {
                 outputNode.put("status", "ACTIVE");
             } else {
-                outputNode.put("status", cnt_opened > 0 ? "ACTIVE" : "COMPLETED");
+                outputNode.put("status", cntOpened > 0 ? "ACTIVE" : "COMPLETED");
             }
             outputNode.put("isBlocked", milestone.isBlocked());
 
             LocalDate currentTime = LocalDate.parse(super.getTimestamp());
             LocalDate dueTime = LocalDate.parse(milestone.getDueDate());
-            int daysUntilMilestone = (int) ChronoUnit.DAYS.between(currentTime, dueTime) + 1;
+            int daysUntilMilestone = (int) ChronoUnit.DAYS.between(milestone.isCompleted()
+                    ? latestClosing : currentTime, dueTime) + 1;
             int overdueBy = 0;
             if (currentTime.isAfter(dueTime)) {
-                if (cnt_opened != 0 || latestClosing.isAfter(currentTime)) {
+                if (cntOpened != 0 || latestClosing.isAfter(currentTime)) {
                     overdueBy = (int) ChronoUnit.DAYS.between(dueTime, currentTime) + 1;
                 } else {
                     overdueBy = (int) ChronoUnit.DAYS.between(dueTime, latestClosing) + 1;
@@ -133,11 +139,11 @@ public final class ViewMilestonesCommand extends Command{
             }
             outputNode.put("daysUntilDue", daysUntilMilestone);
             outputNode.put("overdueBy", overdueBy);
-            outputNode.set("openTickets",mapper.valueToTree(openTickets));
+            outputNode.set("openTickets", mapper.valueToTree(openTickets));
             outputNode.set("closedTickets", mapper.valueToTree(closedTickets));
-            int totalTickets = cnt_closed + cnt_opened;
-            double completionRate = (double) cnt_closed / totalTickets;
-            completionRate = Math.round(completionRate * 100.0) / 100.0;
+            int totalTickets = cntClosed + cntOpened;
+            double completionRate = (double) cntClosed / totalTickets;
+            completionRate = Math.round(completionRate * ROUNDER) / ROUNDER;
             outputNode.put("completionPercentage", completionRate);
 
             ArrayNode repartitionNode = mapper.createArrayNode();
@@ -147,15 +153,15 @@ public final class ViewMilestonesCommand extends Command{
                 ArrayNode assignedTicketsArray = mapper.createArrayNode();
                 List<Integer> developerTicketIds = new ArrayList<>();
                 if (appStorage.findUser(developerName) != null) {
-                    Developer developer = (Developer)appStorage.findUser(developerName);
-                    List <Ticket> tickets = developer.getAssignedTickets();
+                    Developer developer = (Developer) appStorage.findUser(developerName);
+                    List<Ticket> tickets = developer.getAssignedTickets();
                     for (Ticket ticket : tickets) {
                         if (milestone.getTicketIds().contains(ticket.getId())) {
                             developerTicketIds.add(ticket.getId());
                         }
                     }
                     Collections.sort(developerTicketIds);
-                    for(Integer id : developerTicketIds) {
+                    for (Integer id : developerTicketIds) {
                         assignedTicketsArray.add(id);
                     }
                 }

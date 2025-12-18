@@ -8,7 +8,6 @@ import enums.TicketType;
 import enums.UserRole;
 import metrics.MetricBaseMethods;
 import metrics.ResolutionEfficiencyMetric;
-import metrics.TicketRiskMetric;
 import processing.AppStorage;
 import tickets.Ticket;
 import users.User;
@@ -21,7 +20,7 @@ import java.util.Map;
 /**
  * generates resolution efficiency report
  */
-public final class GenerateResolutionEfficiencyReport extends Command{
+public final class GenerateResolutionEfficiencyReport extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
     public GenerateResolutionEfficiencyReport(final String username, final String timestamp) {
@@ -54,8 +53,8 @@ public final class GenerateResolutionEfficiencyReport extends Command{
             return createErrorNode("The user " + super.getUsername() + " does not exist.");
         }
         if (user.getRole() != UserRole.MANAGER) {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role MANAGER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role MANAGER; user role " + user.getRole() + ".");
         }
         MetricBaseMethods report = new ResolutionEfficiencyMetric();
         Map<TicketType, Integer> ticketsByType = new EnumMap<>(TicketType.class);
@@ -70,8 +69,8 @@ public final class GenerateResolutionEfficiencyReport extends Command{
             scoresByType.put(t, new ArrayList<>());
         }
         for (Ticket ticket : appStorage.getTickets()) {
-            if ((ticket.getState() == TicketStatus.RESOLVED || ticket.getState() == TicketStatus.CLOSED)
-                    && report.isTicketValid(ticket)) {
+            if ((ticket.getState() == TicketStatus.RESOLVED
+                    || ticket.getState() == TicketStatus.CLOSED) && report.isTicketValid(ticket)) {
                 ticketsByType.put(ticket.getType(), ticketsByType.get(ticket.getType()) + 1);
                 ticketsByPriority.put(ticket.getBusinessPriority(),
                         ticketsByPriority.get(ticket.getBusinessPriority()) + 1);

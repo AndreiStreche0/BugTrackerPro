@@ -7,7 +7,7 @@ import java.time.LocalDate;
 /**
  * filter used to check if the creation date is at given date
  */
-public class CreatedAtFilter implements Filter <Ticket> {
+public class CreatedAtFilter implements Filter<Ticket> {
     private final LocalDate wantedDate;
 
     public CreatedAtFilter(final String wantedDateString) {

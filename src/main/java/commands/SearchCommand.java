@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import enums.TicketStatus;
 import enums.UserRole;
-import factory.FilterFactory;
+import factories.FilterFactory;
 import filters.Filter;
 import milestones.Milestone;
 import processing.AppStorage;
@@ -14,12 +14,14 @@ import users.Developer;
 import users.Manager;
 import users.User;
 
-import java.util.*;
-
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 /**
  * search command that returns all the developers or tickets filtered by given requirements
  */
-public final class SearchCommand extends Command{
+public final class SearchCommand extends Command {
     private final Map<String, Object> filters;
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
@@ -56,11 +58,12 @@ public final class SearchCommand extends Command{
         if (user == null) {
             return createErrorNode("The user " + super.getUsername() + " does not exist.");
         }
-        switch(user.getRole()) {
+        switch (user.getRole()) {
             case UserRole.DEVELOPER:
                 if (filters.get("searchType").equals("DEVELOPER")) {
-                    return createErrorNode("The user does not have permission to execute this" +
-                            " command: required role MANAGER; user role " + user.getRole() + ".");
+                    return createErrorNode("The user does not have permission to execute this"
+                            + " command: required role MANAGER; user role " + user.getRole()
+                            + ".");
                 }
                 tickets = this.availableTicketList((Developer) user);
                 break;
@@ -73,9 +76,9 @@ public final class SearchCommand extends Command{
                 }
                 break;
             default:
-                return createErrorNode("The user does not have permission to execute this" +
-                        " command: required role DEVELOPER, MANAGER; user role " +
-                        user.getRole() + ".");
+                return createErrorNode("The user does not have permission to execute this"
+                        + " command: required role DEVELOPER, MANAGER; user role "
+                        + user.getRole() + ".");
         }
         ObjectNode outputNode = mapper.createObjectNode();
         outputNode.put("command", "search");
@@ -84,8 +87,9 @@ public final class SearchCommand extends Command{
         outputNode.put("searchType", (String) filters.get("searchType"));
         if (filters.get("searchType").equals("TICKET")) {
             List<Ticket> result = new ArrayList<>();
-            Developer developer = isDeveloper ? (Developer)user : null;
-            List<Filter<Ticket>> ticketFilters = FilterFactory.createTicketFilters(filters, developer);
+            Developer developer = isDeveloper ? (Developer) user : null;
+            List<Filter<Ticket>> ticketFilters
+                    = FilterFactory.createTicketFilters(filters, developer);
             ArrayNode filteredTickets = mapper.createArrayNode();
             if (tickets == null) {
                 outputNode.set("results", filteredTickets);
@@ -118,14 +122,15 @@ public final class SearchCommand extends Command{
                 ticketNode.put("businessPriority", ticket.getBusinessPriority().toString());
                 ticketNode.put("status", ticket.getState().toString());
                 ticketNode.put("createdAt", ticket.getCreatedAt());
-                ticketNode.put("solvedAt", ticket.getSolvedAt() == null ? "" :
-                        ticket.getSolvedAt());
+                ticketNode.put("solvedAt", ticket.getSolvedAt() == null ? ""
+                        : ticket.getSolvedAt());
                 ticketNode.put("reportedBy", ticket.getReportedBy());
                 List<String> matches = new ArrayList<>();
                 if (filters.get("keywords") != null) {
                     for (String keyword : (List<String>) filters.get("keywords")) {
-                        if (ticket.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
-                                ticket.getDescription() != null && ticket.getDescription().contains(keyword.toLowerCase())) {
+                        if (ticket.getTitle().toLowerCase().contains(keyword.toLowerCase())
+                                || ticket.getDescription() != null
+                                && ticket.getDescription().contains(keyword.toLowerCase())) {
                             matches.add(keyword.toLowerCase());
                         }
                     }
@@ -138,7 +143,8 @@ public final class SearchCommand extends Command{
             }
             outputNode.set("results", filteredTickets);
         } else if (filters.get("searchType").equals("DEVELOPER")) {
-            List<Filter<Developer>> developerFilters = FilterFactory.createDeveloperFilters(filters);
+            List<Filter<Developer>> developerFilters
+                    = FilterFactory.createDeveloperFilters(filters);
             List<Developer> result = new ArrayList<>();
             ArrayNode filteredDevelopers = mapper.createArrayNode();
 
@@ -178,8 +184,8 @@ public final class SearchCommand extends Command{
      * @param developer the developer that has the tickets
      * @return all the available tickets for the developer
      */
-    private List<Ticket> availableTicketList(Developer developer) {
-        List <Ticket> tickets = new ArrayList<>();
+    private List<Ticket> availableTicketList(final Developer developer) {
+        List<Ticket> tickets = new ArrayList<>();
         for (Milestone milestone : appStorage.getMilestones()) {
             if (milestone.getAssignedDevs().contains(developer.getUsername())) {
                 for (int ticketId : milestone.getTicketIds()) {
@@ -197,10 +203,10 @@ public final class SearchCommand extends Command{
      * @param manager the manager who gives the command
      * @return all the developers that are subordinates of the manager
      */
-    private List<Developer> developerList(Manager manager) {
-        List <Developer> developerList = new ArrayList<>();
+    private List<Developer> developerList(final Manager manager) {
+        List<Developer> developerList = new ArrayList<>();
         for (String developerName : manager.getSubordinates()) {
-            developerList.add((Developer)appStorage.findUser(developerName));
+            developerList.add((Developer) appStorage.findUser(developerName));
         }
         return developerList;
     }

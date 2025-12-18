@@ -1,17 +1,12 @@
 package processing;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import commands.Command;
-import factory.CommandFactory;
+import factories.CommandFactory;
 import fileio.CommandInput;
 import fileio.UserInput;
 import processing.states.StateSpecificActions;
-import processing.states.TestingPhaseState;
-import users.User;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +37,8 @@ public final class Brain {
             }
 
             Command command = CommandFactory.createCommand(commandInput);
-            ObjectNode result = projectProcessor.executeCommand(command, commandInput.getTimestamp());
+            ObjectNode result = projectProcessor.executeCommand(command,
+                    commandInput.getTimestamp());
             if (result == null && command.getCommandName().equals("lostInvestors")) {
                 projectProcessor.closeApp(command.getTimestamp());
             }

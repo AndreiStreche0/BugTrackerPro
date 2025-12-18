@@ -2,23 +2,20 @@ package commands;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import enums.AppPhase;
 import enums.BusinessPriority;
 import enums.TicketType;
 import enums.UserRole;
-import factory.FactoryService;
-import fileio.CommandInput;
+import factories.FactoryService;
 import processing.AppStorage;
 import tickets.Ticket;
 import users.User;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * command used for reporting a ticket
  */
-public final class ReportTicketCommand extends Command{
+public final class ReportTicketCommand extends Command {
     private final Map<String, Object> ticketParameters;
     private final FactoryService ticketService;
     private final ObjectMapper mapper;
@@ -58,8 +55,8 @@ public final class ReportTicketCommand extends Command{
         }
         User currentUser = appStorage.findUser(super.getUsername());
         if (currentUser.getRole() != UserRole.REPORTER) {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role Reporter; user role " + currentUser.getRole());
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role Reporter; user role " + currentUser.getRole());
         }
         if (!correctPhase) {
             return createErrorNode("Tickets can only be reported during testing phases.");
@@ -67,10 +64,10 @@ public final class ReportTicketCommand extends Command{
         String reporterName = (String) ticketParameters.get("reportedBy");
         if (reporterName != null && reporterName.isEmpty()) {
             if (newTicket.getType() == TicketType.BUG) {
-//                newTicket.setReportedBy("ANONYMOUS");
                 newTicket.setBusinessPriority(BusinessPriority.LOW);
             } else {
-                return createErrorNode("Anonymous reports are only allowed for tickets of type BUG.");
+                return createErrorNode("Anonymous reports are only allowed for tickets of type"
+                        + " BUG.");
             }
         }
         appStorage.addTicket(newTicket);

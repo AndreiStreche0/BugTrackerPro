@@ -3,11 +3,8 @@ package commands;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import enums.UserRole;
-import fileio.CommandInput;
 import processing.AppStorage;
 import users.User;
-
-import java.util.List;
 
 /**
  * closes the app
@@ -45,13 +42,13 @@ public final class LostInvestorsCommand extends Command {
             return createErrorNode("The user " + super.getUsername() + " doesn't exist.");
         }
         User user = appStorage.findUser(super.getUsername());
-        if (user.getRole()!= UserRole.MANAGER) {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role MANAGER; user role " + user.getRole());
+        if (user.getRole() != UserRole.MANAGER) {
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role MANAGER; user role " + user.getRole());
         }
         if (!correctPhase) {
-            return createErrorNode("LostInvestors can only happen during testing and developing" +
-                    " phases");
+            return createErrorNode("LostInvestors can only happen during testing and developing"
+                    + " phases");
         }
         return null;
     }

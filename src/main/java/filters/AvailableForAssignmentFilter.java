@@ -8,11 +8,11 @@ import users.Developer;
 /**
  * filter that checks if a ticket is available for assignment
  */
-public class AvailableForAssignmentFilter implements Filter <Ticket> {
-    AppStorage appStorage;
-    Developer currentDeveloper;
+public class AvailableForAssignmentFilter implements Filter<Ticket> {
+    private final AppStorage appStorage;
+    private final Developer currentDeveloper;
 
-    public AvailableForAssignmentFilter(Developer currentDeveloper) {
+    public AvailableForAssignmentFilter(final Developer currentDeveloper) {
         this.currentDeveloper = currentDeveloper;
         this.appStorage = AppStorage.getInstance();
     }

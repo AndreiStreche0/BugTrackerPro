@@ -1,6 +1,10 @@
-package factory;
+package factories;
 
-import enums.*;
+import enums.Frequency;
+import enums.Severity;
+import enums.BusinessPriority;
+import enums.ExpertiseArea;
+import enums.TicketStatus;
 import tickets.Bug;
 import tickets.Ticket;
 

@@ -1,15 +1,12 @@
 package milestones;
 
 import enums.BusinessPriority;
-import enums.Seniority;
 import enums.TicketStatus;
 import enums.UserRole;
 import notifications.Observers;
 import processing.AppStorage;
 import tickets.Ticket;
-import tickets.TicketHistory;
 import users.Developer;
-import users.User;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -32,9 +29,9 @@ public final class Milestone extends Observers {
     private LocalDate lastAutomaticUpdate;
     private boolean warnedOfDeadline;
 
-    public Milestone(String name, List<String> blockingFor, String dueDate,
-                     String createdAt, List<Integer> ticketIds,
-                     List<String> assignedDevs, String createdBy) {
+    public Milestone(final String name, final List<String> blockingFor, final String dueDate,
+                     final String createdAt, final List<Integer> ticketIds,
+                     final List<String> assignedDevs, final String createdBy) {
         this.name = name;
         this.blockingFor = blockingFor;
         this.dueDate = dueDate;
@@ -50,7 +47,7 @@ public final class Milestone extends Observers {
         return warnedOfDeadline;
     }
 
-    public void setWarnedOfDeadline(boolean warnedOfDeadline) {
+    public void setWarnedOfDeadline(final boolean warnedOfDeadline) {
         this.warnedOfDeadline = warnedOfDeadline;
     }
 
@@ -58,14 +55,14 @@ public final class Milestone extends Observers {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
     public LocalDate getLastAutomaticUpdate() {
         return lastAutomaticUpdate;
     }
 
-    public void setLastAutomaticUpdate(LocalDate lastAutomaticUpdate) {
+    public void setLastAutomaticUpdate(final LocalDate lastAutomaticUpdate) {
         this.lastAutomaticUpdate = lastAutomaticUpdate;
     }
 
@@ -73,7 +70,7 @@ public final class Milestone extends Observers {
         return blockingFor;
     }
 
-    public void setBlockingFor(List<String> blockingFor) {
+    public void setBlockingFor(final List<String> blockingFor) {
         this.blockingFor = blockingFor;
     }
 
@@ -81,7 +78,7 @@ public final class Milestone extends Observers {
         return dueDate;
     }
 
-    public void setDueDate(String dueDate) {
+    public void setDueDate(final String dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -89,7 +86,7 @@ public final class Milestone extends Observers {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(final String createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -97,7 +94,7 @@ public final class Milestone extends Observers {
         return ticketIds;
     }
 
-    public void setTicketIds(List<Integer> ticketIds) {
+    public void setTicketIds(final List<Integer> ticketIds) {
         this.ticketIds = ticketIds;
     }
 
@@ -105,7 +102,7 @@ public final class Milestone extends Observers {
         return assignedDevs;
     }
 
-    public void setAssignedDevs(List<String> assignedDevs) {
+    public void setAssignedDevs(final List<String> assignedDevs) {
         this.assignedDevs = assignedDevs;
     }
 
@@ -113,14 +110,23 @@ public final class Milestone extends Observers {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(final String createdBy) {
         this.createdBy = createdBy;
     }
-    public void addBlocker(String milestoneName) {
+
+    /**
+     * adds a new blocker to the blockers list
+     * @param milestoneName milestone blocker name
+     */
+    public void addBlocker(final String milestoneName) {
         this.blockers.add(milestoneName);
     }
 
-    public void removeBlocker(String milestoneName) {
+    /**
+     * removes a blocker milestone for the blockers list
+     * @param milestoneName milestone blocker name
+     */
+    public void removeBlocker(final String milestoneName) {
         if (!this.blockers.isEmpty()) {
             this.blockers.remove(milestoneName);
         }
@@ -140,15 +146,15 @@ public final class Milestone extends Observers {
                 ticket.setBusinessPriority(BusinessPriority.CRITICAL);
             }
         }
-        this.sendNotifications("Milestone " + this.name + " is due tomorrow. All unresolved" +
-                " tickets are now CRITICAL.");
+        this.sendNotifications("Milestone " + this.name + " is due tomorrow. All unresolved"
+                + " tickets are now CRITICAL.");
     }
 
     /**
      * increments priority of milestone tickets
      * @param newLastUpdateDate changes when the ticket was last updated
      */
-    public void incrementPriority(LocalDate newLastUpdateDate) {
+    public void incrementPriority(final LocalDate newLastUpdateDate) {
         this.lastAutomaticUpdate = newLastUpdateDate;
         for (int id : this.getTicketIds()) {
             Ticket ticket = appStorage.getTicket(id);
@@ -169,7 +175,8 @@ public final class Milestone extends Observers {
                 default:
                     continue;
             }
-            if (ticket.getAssignedTo() != null && ticket.getAssignedTo().getRole() == UserRole.DEVELOPER) {
+            if (ticket.getAssignedTo() != null && ticket.getAssignedTo().getRole()
+                    == UserRole.DEVELOPER) {
                 Developer dev = (Developer) ticket.getAssignedTo();
 
                 if (!dev.hasRequiredSeniority(ticket.getBusinessPriority())) {
@@ -186,7 +193,7 @@ public final class Milestone extends Observers {
      * @param developer the developer
      * @return if the ticket is assignable to that developer
      */
-    public boolean isTicketAssignable (Ticket ticket, Developer developer) {
+    public boolean isTicketAssignable(final Ticket ticket, final Developer developer) {
         if (this.isBlocked()) {
             return false;
         }
@@ -201,6 +208,19 @@ public final class Milestone extends Observers {
         }
         if (!developer.hasRequiredExpertise(ticket.getExpertiseArea())) {
             return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return if every ticket is completed
+     */
+    public boolean isCompleted() {
+        for (int id : this.ticketIds) {
+            Ticket ticket = appStorage.getTicket(id);
+            if (ticket != null && !ticket.getState().equals(TicketStatus.CLOSED)) {
+                return false;
+            }
         }
         return true;
     }

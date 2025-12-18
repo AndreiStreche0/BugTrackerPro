@@ -23,6 +23,17 @@ import java.util.List;
  * generates the performance report
  */
 public final class GeneratePerformanceReportCommand extends Command {
+    private static final double CLOSED_TICKETS_MULTIPLIER = 0.5;
+    private static final double MID_PRIORITY_MULTIPLIER = 0.7;
+    private static final double SENIOR_PRIORITY_MULTIPLIER = 1.0;
+    private static final double JUNIOR_BONUS_VALUE = 5.0;
+    private static final double MID_BONUS_VALUE = 15.0;
+    private static final double SENIOR_BONUS_VALUE = 30.0;
+    private static final double MID_SOLVING_MULTIPLIER = 0.3;
+    private static final double SENIOR_SOLVING_MULTIPLIER = 0.5;
+    private static final double ROUNDER = 100.0;
+    private static final double AVG_DIVIDER = 3.0;
+
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
@@ -43,10 +54,14 @@ public final class GeneratePerformanceReportCommand extends Command {
         output.put("error", message);
         return output;
     }
-    private double calculateDiversityFactor(int bugCnt, int featureCnt, int UICnt) {
-        double avg = (bugCnt + featureCnt + UICnt) / 3.0;
-        if (avg == 0) return 0.0;
-        double variance = (Math.pow(bugCnt - avg, 2) + Math.pow(featureCnt - avg, 2) + Math.pow(UICnt - avg, 2)) / 3.0;
+    private double calculateDiversityFactor(final int bugCnt, final int featureCnt,
+                                            final int userInterfaceCnt) {
+        double avg = (bugCnt + featureCnt + userInterfaceCnt) / AVG_DIVIDER;
+        if (avg == 0) {
+            return 0.0;
+        }
+        double variance = (Math.pow(bugCnt - avg, 2) + Math.pow(featureCnt - avg, 2)
+                + Math.pow(userInterfaceCnt - avg, 2)) / AVG_DIVIDER;
         return Math.sqrt(variance) / avg;
     }
     /**
@@ -63,8 +78,8 @@ public final class GeneratePerformanceReportCommand extends Command {
             return createErrorNode("The user " + super.getUsername() + " does not exist.");
         }
         if (user.getRole() != UserRole.MANAGER) {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role MANAGER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role MANAGER; user role " + user.getRole() + ".");
         }
 
         List<Developer> developers = new ArrayList<>();
@@ -80,11 +95,14 @@ public final class GeneratePerformanceReportCommand extends Command {
         for (Ticket ticket : appStorage.getTickets()) {
 
             if (ticket.getAssignedTo() != null) {
-                System.out.println("developers is: " + ticket.getAssignedTo().getUsername() + " and has the tickets: ");
-                System.out.println(ticket.getTitle() + " with id " + ticket.getId() + " and state " + ticket.getState());
-            }else {
+                System.out.println("developers is: " + ticket.getAssignedTo().getUsername()
+                        + " and has the tickets: ");
+                System.out.println(ticket.getTitle() + " with id " + ticket.getId()
+                        + " and state " + ticket.getState());
+            } else {
                 System.out.println("developers not existent " + " and has the tickets: ");
-                System.out.println("ticket not assigned " +  " with id " + ticket.getId() + " and state " + ticket.getState());
+                System.out.println("ticket not assigned " +  " with id " + ticket.getId()
+                        + " and state " + ticket.getState());
 
             }
         }
@@ -95,15 +113,18 @@ public final class GeneratePerformanceReportCommand extends Command {
             for (Ticket ticket : developer.getAssignedTickets()) {
                 if (ticket.getState() == TicketStatus.CLOSED && ticket.getSolvedAt() != null) {
                     LocalDate solved = LocalDate.parse(ticket.getSolvedAt());
-                    if (solved.getMonthValue() == prevMonthDate.getMonthValue() &&
-                            solved.getYear() == prevMonthDate.getYear()) {
+                    if (solved.getMonthValue() == prevMonthDate.getMonthValue()
+                            && solved.getYear() == prevMonthDate.getYear()) {
                         switch (ticket.getType()) {
                             case BUG -> cntBug++;
                             case FEATURE_REQUEST -> cntFeatureReq++;
                             case UI_FEEDBACK -> cntUIFeedback++;
+                            default -> {
+                                continue;
+                            }
                         }
-                        if (ticket.getBusinessPriority() == BusinessPriority.HIGH ||
-                                ticket.getBusinessPriority() == BusinessPriority.CRITICAL) {
+                        if (ticket.getBusinessPriority() == BusinessPriority.HIGH
+                                || ticket.getBusinessPriority() == BusinessPriority.CRITICAL) {
                             highPriorityTickets++;
                         }
                         totalDays += (int) (ChronoUnit.DAYS.between(LocalDate.parse(
@@ -116,20 +137,27 @@ public final class GeneratePerformanceReportCommand extends Command {
             double score = 0.0, averageSolving = (double) totalDays / totalClosedTickets;
             if (totalClosedTickets > 0) {
                 if (developer.getSeniority() == Seniority.JUNIOR) {
-                    double ticketDiversity = this.calculateDiversityFactor(cntBug, cntFeatureReq, cntUIFeedback);
-                    score = Math.max(0, 0.5 * totalClosedTickets - ticketDiversity) + 5;
+                    double ticketDiversity = this.calculateDiversityFactor(cntBug, cntFeatureReq,
+                            cntUIFeedback);
+                    score = Math.max(0, CLOSED_TICKETS_MULTIPLIER * totalClosedTickets
+                            - ticketDiversity) + JUNIOR_BONUS_VALUE;
                 } else if (developer.getSeniority() == Seniority.MID) {
-                    score = Math.max(0, 0.5 * totalClosedTickets + 0.7 * highPriorityTickets - 0.3 * averageSolving) + 15;
+                    score = Math.max(0, CLOSED_TICKETS_MULTIPLIER * totalClosedTickets
+                            + MID_PRIORITY_MULTIPLIER * highPriorityTickets
+                            - MID_SOLVING_MULTIPLIER * averageSolving) + MID_BONUS_VALUE;
                 } else if (developer.getSeniority() == Seniority.SENIOR) {
-                    score = Math.max(0, 0.5 * totalClosedTickets + 1.0 * highPriorityTickets - 0.5 * averageSolving) + 30;
+                    score = Math.max(0, CLOSED_TICKETS_MULTIPLIER * totalClosedTickets
+                            + SENIOR_PRIORITY_MULTIPLIER * highPriorityTickets
+                            - SENIOR_SOLVING_MULTIPLIER * averageSolving) + SENIOR_BONUS_VALUE;
                 }
             }
             developer.setPerformanceScore(score);
             ObjectNode developerOutput = mapper.createObjectNode();
             developerOutput.put("username", developer.getUsername());
             developerOutput.put("closedTickets", totalClosedTickets);
-            developerOutput.put("averageResolutionTime", Math.round(averageSolving * 100.0) / 100.0);
-            developerOutput.put("performanceScore", Math.round(score * 100.0) / 100.0);
+            developerOutput.put("averageResolutionTime", Math.round(averageSolving * ROUNDER)
+                    / ROUNDER);
+            developerOutput.put("performanceScore", Math.round(score * ROUNDER) / ROUNDER);
             developerOutput.put("seniority", developer.getSeniority().toString());
             outputArray.add(developerOutput);
         }

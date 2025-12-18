@@ -21,6 +21,10 @@ import java.util.Map;
  * command to calculate the app stability
  */
 public final class AppStabilityReportCommand extends Command {
+    private static final int LOW_CATEGORY_THRESHOLD = 24;
+    private static final int MODERATE_CATEGORY_THRESHOLD = 49;
+    private static final int SIGNIFICANT_CATEGORY_THRESHOLD = 74;
+    private static final double IMPACT_AVERAGE_THRESHOLD = 50.0;
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
@@ -54,8 +58,8 @@ public final class AppStabilityReportCommand extends Command {
             return createErrorNode("The user " + super.getUsername() + " does not exist.");
         }
         if (user.getRole() != UserRole.MANAGER) {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role MANAGER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role MANAGER; user role " + user.getRole() + ".");
         }
         TicketRiskMetric riskReport = new TicketRiskMetric();
         CustomerImpactMetric impactReport = new CustomerImpactMetric();
@@ -66,10 +70,10 @@ public final class AppStabilityReportCommand extends Command {
         Map<TicketType, Double> averageRisk = new EnumMap<>(TicketType.class);
         Map<TicketType, Double> averageImpact = new EnumMap<>(TicketType.class);
         int cntOpenTickets = 0;
-        for(BusinessPriority p : BusinessPriority.values()) {
+        for (BusinessPriority p : BusinessPriority.values()) {
             ticketsByPriority.put(p, 0);
         }
-        for(TicketType t : TicketType.values()) {
+        for (TicketType t : TicketType.values()) {
             riskScores.put(t, new ArrayList<>());
             impactScores.put(t, new ArrayList<>());
             ticketsByType.put(t, 0);
@@ -103,7 +107,7 @@ public final class AppStabilityReportCommand extends Command {
                     || this.getRiskCategory(riskAverageScore).equals("MAJOR")) {
                 foundSignificantRisk = true;
             }
-            if (impactAverageScore >= 50.0) {
+            if (impactAverageScore >= IMPACT_AVERAGE_THRESHOLD) {
                 foundNonLowImpact = true;
             }
         }
@@ -143,7 +147,7 @@ public final class AppStabilityReportCommand extends Command {
         }
         reportNode.put("appStability", appStability);
         output.set("report", reportNode);
-        if(appStability.equals("STABLE")) {
+        if (appStability.equals("STABLE")) {
             appStorage.setAppPhase(AppPhase.CLOSED);
         }
         return output;
@@ -155,11 +159,11 @@ public final class AppStabilityReportCommand extends Command {
      * @return the string corresponding with that risk category
      */
     private String getRiskCategory(final double score) {
-        if (score <= 24) {
+        if (score <= LOW_CATEGORY_THRESHOLD) {
             return "NEGLIGIBLE";
-        } else if (score <= 49) {
+        } else if (score <= MODERATE_CATEGORY_THRESHOLD) {
             return "MODERATE";
-        } else if (score <= 74) {
+        } else if (score <= SIGNIFICANT_CATEGORY_THRESHOLD) {
             return "SIGNIFICANT";
         } else {
             return "MAJOR";

@@ -1,7 +1,6 @@
 package fileio;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -26,7 +25,7 @@ public final class UserInput {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
@@ -34,7 +33,7 @@ public final class UserInput {
         return mail;
     }
 
-    public void setMail(String mail) {
+    public void setMail(final String mail) {
         this.mail = mail;
     }
 
@@ -42,7 +41,7 @@ public final class UserInput {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(final String role) {
         this.role = role;
     }
 
@@ -50,7 +49,7 @@ public final class UserInput {
         return hireDate;
     }
 
-    public void setHireDate(String hireDate) {
+    public void setHireDate(final String hireDate) {
         this.hireDate = hireDate;
     }
 
@@ -58,7 +57,7 @@ public final class UserInput {
         return expertiseArea;
     }
 
-    public void setExpertiseArea(String expertiseArea) {
+    public void setExpertiseArea(final String expertiseArea) {
         this.expertiseArea = expertiseArea;
     }
 
@@ -66,7 +65,7 @@ public final class UserInput {
         return seniority;
     }
 
-    public void setSeniority(String seniority) {
+    public void setSeniority(final String seniority) {
         this.seniority = seniority;
     }
 
@@ -74,7 +73,7 @@ public final class UserInput {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
@@ -82,7 +81,7 @@ public final class UserInput {
         return subordinates;
     }
 
-    public void setSubordinates(List<String> subordinates) {
+    public void setSubordinates(final List<String> subordinates) {
         this.subordinates = subordinates;
     }
 }

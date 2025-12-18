@@ -48,8 +48,8 @@ public final class ViewAssignedTicketsCommand extends Command {
             return createErrorNode("The user " + super.getUsername() + " does not exist.");
         }
         if (user.getRole() != UserRole.DEVELOPER) {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role DEVELOPER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role DEVELOPER; user role " + user.getRole() + ".");
         }
         Developer developer = (Developer) user;
         List<Ticket> currTickets = new ArrayList<>(developer.getAssignedTickets());
@@ -77,8 +77,8 @@ public final class ViewAssignedTicketsCommand extends Command {
             ticketNode.put("businessPriority", ticket.getBusinessPriority().toString());
             ticketNode.put("status", ticket.getState().toString());
             ticketNode.put("createdAt", ticket.getCreatedAt());
-            ticketNode.put("assignedAt", ticket.getAssignedAt() == null ? "" :
-                    ticket.getAssignedAt());
+            ticketNode.put("assignedAt", ticket.getAssignedAt() == null ? ""
+                    : ticket.getAssignedAt());
             ticketNode.put("reportedBy", ticket.getReportedBy());
             if (ticket.getComments() == null || ticket.getComments().isEmpty()) {
                 ticketNode.putArray("comments");

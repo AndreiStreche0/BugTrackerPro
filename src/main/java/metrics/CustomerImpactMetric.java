@@ -1,6 +1,7 @@
 package metrics;
 
-import enums.*;
+import enums.TicketType;
+import enums.TicketStatus;
 import tickets.FeatureRequest;
 import tickets.Ticket;
 import tickets.Bug;
@@ -9,15 +10,18 @@ import tickets.UIFeedback;
 /**
  * class that calculates the customer impact metric for a given ticket
  */
-public class CustomerImpactMetric implements MetricBaseMethods{
+public class CustomerImpactMetric implements MetricBaseMethods {
+    public static final double MAX_VALUE_BUG = 48.0;
+    public static final double MAX_VALUE_OTHER_TYPES = 100.0;
+
     /**
      * @param ticket ticket for the metric
      * @return if the ticket is valid for the metric calculation
      */
     @Override
     public boolean isTicketValid(final Ticket ticket) {
-        return ticket.getState() == TicketStatus.OPEN ||
-                ticket.getState() == TicketStatus.IN_PROGRESS;
+        return ticket.getState() == TicketStatus.OPEN
+                || ticket.getState() == TicketStatus.IN_PROGRESS;
     }
 
     /**
@@ -57,8 +61,8 @@ public class CustomerImpactMetric implements MetricBaseMethods{
     @Override
     public double getMaxValue(final TicketType type) {
         return switch (type) {
-            case BUG -> 48.0;
-            case UI_FEEDBACK, FEATURE_REQUEST -> 100.0;
+            case BUG -> MAX_VALUE_BUG;
+            case UI_FEEDBACK, FEATURE_REQUEST -> MAX_VALUE_OTHER_TYPES;
             default -> 1.0;
         };
     }

@@ -11,13 +11,14 @@ import java.util.List;
 /**
  * undoes a previous add comment command
  */
-public class UndoAddCommentCommand extends Command{
+public final class UndoAddCommentCommand extends Command {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
     private int ticketId;
 
-    public UndoAddCommentCommand(String username, String timestamp, int ticketId) {
+    public UndoAddCommentCommand(final String username, final String timestamp,
+                                 final int ticketId) {
         super("undoAddComment", username, timestamp);
         this.ticketId = ticketId;
         this.appStorage = AppStorage.getInstance();
@@ -27,7 +28,7 @@ public class UndoAddCommentCommand extends Command{
      * @param message the string used for the node
      * @return the ObjectNode output
      */
-    private ObjectNode createErrorNode(String message) {
+    private ObjectNode createErrorNode(final String message) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "undoAddComment");
         output.put("username", super.getUsername());
@@ -41,7 +42,7 @@ public class UndoAddCommentCommand extends Command{
      * @return the output node
      */
     @Override
-    public ObjectNode execute(boolean correctPhase) {
+    public ObjectNode execute(final boolean correctPhase) {
         Ticket ticket = appStorage.getTicket(ticketId);
         ObjectMapper mapper = new ObjectMapper();
         if (ticket == null) {

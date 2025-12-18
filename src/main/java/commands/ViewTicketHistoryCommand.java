@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * command to show the history of a ticket
  */
-public final class ViewTicketHistoryCommand extends Command{
+public final class ViewTicketHistoryCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
@@ -60,12 +60,12 @@ public final class ViewTicketHistoryCommand extends Command{
                     }
                 }
 
-                if (userTicket || ticket.getAssignedTo() != null &&
-                        ticket.getAssignedTo().getUsername().equals(user.getUsername())) {
+                if (userTicket || ticket.getAssignedTo() != null
+                        && ticket.getAssignedTo().getUsername().equals(user.getUsername())) {
                     viewableTickets.add(ticket);
                 }
             }
-        } else if(user.getRole() == UserRole.MANAGER) {
+        } else if (user.getRole() == UserRole.MANAGER) {
             for (Milestone milestone : appStorage.getMilestones()) {
                 if (milestone.getCreatedBy().equals(user.getUsername())) {
                     for (int id : milestone.getTicketIds()) {
@@ -74,12 +74,14 @@ public final class ViewTicketHistoryCommand extends Command{
                 }
             }
         } else {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role DEVELOPER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role DEVELOPER; user role " + user.getRole() + ".");
         }
         viewableTickets.sort((t1, t2) -> {
             int dateComp = t1.getCreatedAt().compareTo(t2.getCreatedAt());
-            if (dateComp != 0) return dateComp;
+            if (dateComp != 0) {
+                return dateComp;
+            }
             return t1.getId() - t2.getId();
         });
         ArrayNode outputArray = mapper.createArrayNode();

@@ -84,7 +84,7 @@ public class TestRunner {
         JsonNode refJson = objectMapper.readTree(new File(refPath));
 
         try {
-            assertThatJson(outputJson).isEqualTo(refJson);
+                assertThatJson(outputJson).isEqualTo(refJson);
             devmindResults.add(new DevmindResult(
                 testName,
                 PASSED,

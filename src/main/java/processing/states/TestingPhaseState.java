@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import commands.Command;
 import enums.AppPhase;
-import fileio.CommandInput;
 
 import java.util.Set;
 
-public class TestingPhaseState implements StateSpecificActions{
+public class TestingPhaseState implements StateSpecificActions {
     private static final Set<String> ALLOWED_COMMANDS = Set.of("reportTicket", "viewTickets",
             "viewMilestones", "search", "viewTicketHistory", "addComment", "undoAddComment",
             "viewNotifications", "lostInvestors", "startTestingPhase", "generatePerformanceReport",

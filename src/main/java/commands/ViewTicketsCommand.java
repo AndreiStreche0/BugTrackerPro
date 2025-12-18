@@ -11,14 +11,12 @@ import tickets.Ticket;
 import users.User;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * command to show all the current tickets based on user role
  */
-public final class ViewTicketsCommand extends Command{
+public final class ViewTicketsCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
 
@@ -52,8 +50,8 @@ public final class ViewTicketsCommand extends Command{
         }
         User user = appStorage.findUser(super.getUsername());
         if (!correctPhase) {
-            return createErrorNode("Tickets can only be viewed during testing and developing" +
-                    " phases.");
+            return createErrorNode("Tickets can only be viewed during testing and developing"
+                    + " phases.");
         }
 
         List<Ticket> viewableTickets = new ArrayList<>();
@@ -98,11 +96,11 @@ public final class ViewTicketsCommand extends Command{
             ticketNode.put("status", ticket.getState().toString());
             ticketNode.put("createdAt", ticket.getCreatedAt());
 
-            ticketNode.put("assignedAt", ticket.getAssignedAt() ==
-                    null ? "" : ticket.getAssignedAt());
+            ticketNode.put("assignedAt", ticket.getAssignedAt()
+                    == null ? "" : ticket.getAssignedAt());
             ticketNode.put("solvedAt", ticket.getSolvedAt() == null ? "" : ticket.getSolvedAt());
-            ticketNode.put("assignedTo", ticket.getAssignedTo() ==
-                    null ? "" : ticket.getAssignedTo().getUsername());
+            ticketNode.put("assignedTo", ticket.getAssignedTo()
+                    == null ? "" : ticket.getAssignedTo().getUsername());
 
             String reporter = ticket.getReportedBy();
             ticketNode.put("reportedBy", reporter == null ? "" : reporter);

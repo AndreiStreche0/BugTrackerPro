@@ -2,7 +2,6 @@ package commands;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import enums.AppPhase;
 import enums.TicketStatus;
 import enums.UserRole;
 import processing.AppStorage;
@@ -13,7 +12,7 @@ import milestones.Milestone;
 /**
  * command used for starting the testing phase
  */
-public final class StartTestingPhaseCommand extends Command{
+public final class StartTestingPhaseCommand extends Command {
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
     public StartTestingPhaseCommand(final String username, final String timestamp) {
@@ -46,14 +45,15 @@ public final class StartTestingPhaseCommand extends Command{
             return createErrorNode("The user " + super.getUsername() + " does not exist.");
         }
         if (user.getRole() != UserRole.MANAGER) {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role MANAGER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role MANAGER; user role " + user.getRole() + ".");
         }
         boolean noOpenMilestone = true;
         for (Milestone milestone : appStorage.getMilestones()) {
             for (int id : milestone.getTicketIds()) {
                 Ticket ticket = appStorage.getTicket(id);
-                if (ticket.getState() == TicketStatus.OPEN || ticket.getState() == TicketStatus.IN_PROGRESS) {
+                if (ticket.getState() == TicketStatus.OPEN
+                        || ticket.getState() == TicketStatus.IN_PROGRESS) {
                      noOpenMilestone = false;
                 }
             }

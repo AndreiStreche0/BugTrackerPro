@@ -7,7 +7,7 @@ import fileio.CommandInput;
 
 import java.util.Set;
 
-public final class DevelopmentPhaseState implements  StateSpecificActions{
+public final class DevelopmentPhaseState implements  StateSpecificActions {
     private static final Set<String> ALLOWED_COMMANDS = Set.of("createMilestone", "assignTicket",
             "undoAssignTicket", "changeStatus", "undoChangeStatus", "viewAssignedTickets",
             "viewTickets", "viewMilestones", "search", "viewTicketHistory", "addComment",

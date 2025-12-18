@@ -1,8 +1,6 @@
 package fileio;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,6 +27,11 @@ public final class CommandInput {
     private Map<String, Object> filters;
     private String comment;
     private String status;
+
+    /**
+     * to solve differences between input fields
+     * @return ticket id
+     */
     public Integer getTicketId() {
         if (ticketId != null) {
             return ticketId;

@@ -1,15 +1,10 @@
 package commands;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import fileio.CommandInput;
-import processing.AppStorage;
-
-import java.util.List;
-
 /**
  * abstract command class that contains common parameters and methods
  */
-public abstract class Command implements ExecuteCommands{
+public abstract class Command implements ExecuteCommands {
     private final String commandName;
     private final String username;
     private final String timestamp;
@@ -20,14 +15,21 @@ public abstract class Command implements ExecuteCommands{
         this.timestamp = timestamp;
     }
 
+    /**
+     * @return command name
+     */
     public String getCommandName() {
         return commandName;
     }
-
+    /**
+     * @return username of command initiator
+     */
     public String getUsername() {
         return username;
     }
-
+    /**
+     * @return command timestamp
+     */
     public String getTimestamp() {
         return timestamp;
     }
@@ -37,5 +39,5 @@ public abstract class Command implements ExecuteCommands{
      * @param correctPhase says if the command can be executed in that phase
      * @return the output node specific to that command
      */
-    public abstract ObjectNode execute(final boolean correctPhase);
+    public abstract ObjectNode execute(boolean correctPhase);
 }

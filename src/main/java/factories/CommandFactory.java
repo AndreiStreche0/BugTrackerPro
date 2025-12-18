@@ -1,13 +1,37 @@
-package factory;
+package factories;
 
-import commands.*;
+import commands.ReportTicketCommand;
+import commands.ViewTicketsCommand;
+import commands.LostInvestorsCommand;
+import commands.CreateMilestoneCommand;
+import commands.ViewMilestonesCommand;
+import commands.AssignTicketCommand;
+import commands.UndoAssignTicketCommand;
+import commands.ViewAssignedTicketsCommand;
+import commands.AddCommentCommand;
+import commands.UndoAddCommentCommand;
+import commands.ChangeStatusCommand;
+import commands.UndoChangeStatusCommand;
+import commands.ViewTicketHistoryCommand;
+import commands.ViewNotificationsCommand;
+import commands.GenerateCustomerImpactReportCommand;
+import commands.GenerateTicketRiskReportCommand;
+import commands.GenerateResolutionEfficiencyReport;
+import commands.AppStabilityReportCommand;
+import commands.GeneratePerformanceReportCommand;
+import commands.StartTestingPhaseCommand;
+import commands.Command;
 import commands.SearchCommand;
 import fileio.CommandInput;
 
 /**
  * factory for creating the commands
  */
-public class CommandFactory {
+public final class CommandFactory {
+    private CommandFactory() {
+        throw new UnsupportedOperationException("This is a utility class and can't be"
+                + " instantiated");
+    }
     /**
      * @param commandInput the input necessary for command creation
      * @return a new command object
@@ -40,10 +64,10 @@ public class CommandFactory {
             case "viewTicketHistory" -> new ViewTicketHistoryCommand(username, timestamp);
             case "search" -> new SearchCommand(username, timestamp, commandInput.getFilters());
             case "viewNotifications" -> new ViewNotificationsCommand(username, timestamp);
-            case "generateCustomerImpactReport" -> new GenerateCustomerImpactReportCommand(username
-                    , timestamp);
-            case "generateTicketRiskReport" -> new GenerateTicketRiskReportCommand(username
-                    , timestamp);
+            case "generateCustomerImpactReport" -> new GenerateCustomerImpactReportCommand(
+                    username, timestamp);
+            case "generateTicketRiskReport" -> new GenerateTicketRiskReportCommand(username,
+                    timestamp);
             case "generateResolutionEfficiencyReport" -> new GenerateResolutionEfficiencyReport(
                     username, timestamp);
             case "appStabilityReport" -> new AppStabilityReportCommand(username, timestamp);

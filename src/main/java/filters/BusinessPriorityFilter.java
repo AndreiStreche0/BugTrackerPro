@@ -6,7 +6,7 @@ import tickets.Ticket;
 /**
  * filters ticket based on business priority
  */
-public class BusinessPriorityFilter implements Filter <Ticket>{
+public class BusinessPriorityFilter implements Filter<Ticket> {
     private final BusinessPriority wantedPriority;
 
     public BusinessPriorityFilter(final BusinessPriority wantedPriority) {

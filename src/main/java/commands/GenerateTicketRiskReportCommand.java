@@ -2,7 +2,6 @@ package commands;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import commands.Command;
 import enums.BusinessPriority;
 import enums.TicketType;
 import enums.UserRole;
@@ -21,6 +20,9 @@ import java.util.Map;
  * generates the ticket risk report
  */
 public final class GenerateTicketRiskReportCommand extends Command {
+    private static final int LOW_CATEGORY_THRESHOLD = 24;
+    private static final int MODERATE_CATEGORY_THRESHOLD = 49;
+    private static final int SIGNIFICANT_CATEGORY_THRESHOLD = 74;
     private final ObjectMapper mapper = new ObjectMapper();
     private final AppStorage appStorage;
     public GenerateTicketRiskReportCommand(final String username, final String timestamp) {
@@ -53,8 +55,8 @@ public final class GenerateTicketRiskReportCommand extends Command {
             return createErrorNode("The user " + super.getUsername() + " does not exist.");
         }
         if (user.getRole() != UserRole.MANAGER) {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role MANAGER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role MANAGER; user role " + user.getRole() + ".");
         }
         MetricBaseMethods report = new TicketRiskMetric();
         Map<TicketType, Integer> ticketsByType = new EnumMap<>(TicketType.class);
@@ -98,12 +100,16 @@ public final class GenerateTicketRiskReportCommand extends Command {
         return output;
     }
 
-    public String getRiskCategory(double score) {
-        if (score <= 24) {
+    /**
+     * @param score ticket risk score
+     * @return the category of ticket risk
+     */
+    public String getRiskCategory(final double score) {
+        if (score <= LOW_CATEGORY_THRESHOLD) {
             return "NEGLIGIBLE";
-        } else if (score <= 49) {
+        } else if (score <= MODERATE_CATEGORY_THRESHOLD) {
             return "MODERATE";
-        } else if (score <= 74) {
+        } else if (score <= SIGNIFICANT_CATEGORY_THRESHOLD) {
             return "SIGNIFICANT";
         } else {
             return "MAJOR";

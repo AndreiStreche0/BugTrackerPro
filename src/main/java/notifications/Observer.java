@@ -8,5 +8,5 @@ public interface Observer {
      * method used for receiving notifications
      * @param notification the notification being sent
      */
-    void update(final String notification);
+    void update(String notification);
 }

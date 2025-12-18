@@ -1,8 +1,7 @@
-package factory;
+package factories;
 
 import enums.ExpertiseArea;
 import enums.Seniority;
-import enums.UserRole;
 import fileio.UserInput;
 import users.Developer;
 import users.Manager;
@@ -12,13 +11,17 @@ import users.User;
 /**
  * user factory used to create new users
  */
-public class UserFactory {
+public final class UserFactory {
+    private UserFactory() {
+        throw new UnsupportedOperationException("This is a utility class and can't be"
+                + " instantiated");
+    }
     /**
      * creates a new user based on its type
      * @param userInput the input containing user information
      * @return the new user
      */
-    public static User createUser(UserInput userInput) {
+    public static User createUser(final UserInput userInput) {
         String userRole = userInput.getRole();
         switch (userRole) {
             case "REPORTER":

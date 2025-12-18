@@ -1,16 +1,23 @@
-package factory;
+package factories;
 
 import enums.BusinessPriority;
-import enums.ExpertiseArea;
 import enums.Seniority;
 import enums.TicketType;
-import filters.*;
-import main.App;
-import processing.AppStorage;
+import filters.Filter;
+import filters.ExpertiseAreaFilter;
+import filters.CreatedAtFilter;
+import filters.PerformanceScoreBelowFilter;
+import filters.CreatedBeforeFilter;
+import filters.AvailableForAssignmentFilter;
+import filters.BusinessPriorityFilter;
+import filters.KeywordsFilter;
+import filters.PerformanceScoreAboveFilter;
+import filters.SeniorityFilter;
+import filters.TypeFilter;
+import filters.CreatedAfterFilter;
 import tickets.Ticket;
 import users.Developer;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +25,11 @@ import java.util.Map;
 /**
  * filter factory used to create new filters for search project functions
  */
-public class FilterFactory {
+public final class FilterFactory {
+    private FilterFactory() {
+        throw new UnsupportedOperationException("This is a utility class and can't be"
+                + " instantiated");
+    }
     /**
      * creates filters for tickets
      * @param filters all the filters to be created
@@ -59,19 +70,23 @@ public class FilterFactory {
      * @param filters all the filters to be created
      * @return a list of filters
      */
-    public static List<Filter<Developer>> createDeveloperFilters(final Map<String, Object> filters) {
+    public static List<Filter<Developer>> createDeveloperFilters(
+            final Map<String, Object> filters) {
         List<Filter<Developer>> filterList = new ArrayList<>();
         if (filters.containsKey("expertiseArea")) {
             filterList.add(new ExpertiseAreaFilter((String) filters.get("expertiseArea")));
         }
         if (filters.containsKey("seniority")) {
-            filterList.add(new SeniorityFilter(Seniority.valueOf((String) filters.get("seniority"))));
+            filterList.add(new SeniorityFilter(Seniority.valueOf((String)
+                    filters.get("seniority"))));
         }
         if (filters.containsKey("performanceScoreAbove")) {
-            filterList.add(new PerformanceScoreAboveFilter(((double) filters.get("performanceScoreAbove"))));
+            filterList.add(new PerformanceScoreAboveFilter((
+                    (double) filters.get("performanceScoreAbove"))));
         }
         if (filters.containsKey("performanceScoreBelow")) {
-            filterList.add(new PerformanceScoreBelowFilter(((double) filters.get("performanceScoreBelow"))));
+            filterList.add(new PerformanceScoreBelowFilter((
+                    (double) filters.get("performanceScoreBelow"))));
 
         }
         return filterList;

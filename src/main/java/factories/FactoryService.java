@@ -1,4 +1,4 @@
-package factory;
+package factories;
 
 import tickets.Ticket;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * class to create the factories and manage the factory design pattern
  */
-public class FactoryService {
+public final class FactoryService {
 
     private static final FactoryService INSTANCE = new FactoryService();
     private int id;
@@ -24,6 +24,10 @@ public class FactoryService {
     public static FactoryService getInstance() {
         return INSTANCE;
     }
+
+    /**
+     * resets id counting
+     */
     public void reset() {
         this.id = 0;
     }

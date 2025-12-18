@@ -7,15 +7,20 @@ import tickets.FeatureRequest;
 import tickets.Ticket;
 import tickets.UIFeedback;
 
-public final class TicketRiskMetric implements MetricBaseMethods{
+public final class TicketRiskMetric implements MetricBaseMethods {
+    public static final double MAX_VALUE_BUG = 12.0;
+    public static final double MAX_VALUE_FEATURE_REQUEST = 20.0;
+    public static final double MAX_VALUE_OTHER_TYPES = 100.0;
+    public static final int USABILITY_SCORE_REFERENCE = 11;
+
     /**
      * @param ticket ticket for the metric
      * @return if the ticket is valid for the metric calculation
      */
     @Override
     public boolean isTicketValid(final Ticket ticket) {
-        return ticket.getState() == TicketStatus.OPEN ||
-                ticket.getState() == TicketStatus.IN_PROGRESS;
+        return ticket.getState() == TicketStatus.OPEN
+                || ticket.getState() == TicketStatus.IN_PROGRESS;
     }
     /**
      * calculates base score for ticket risk report
@@ -40,7 +45,7 @@ public final class TicketRiskMetric implements MetricBaseMethods{
             case UI_FEEDBACK:
                 UIFeedback ui = (UIFeedback) ticket;
                 int uiBusinessValue = EnumToIntConverter.businessValueToInt(ui.getBusinessValue());
-                return (11 - ui.getUsabilityScore()) * uiBusinessValue;
+                return (USABILITY_SCORE_REFERENCE - ui.getUsabilityScore()) * uiBusinessValue;
 
             default:
                 return 0;
@@ -53,9 +58,9 @@ public final class TicketRiskMetric implements MetricBaseMethods{
     @Override
     public double getMaxValue(final TicketType type) {
         return switch (type) {
-            case BUG -> 12.0;
-            case FEATURE_REQUEST -> 20.0;
-            default -> 100.0;
+            case BUG -> MAX_VALUE_BUG;
+            case FEATURE_REQUEST -> MAX_VALUE_FEATURE_REQUEST;
+            default -> MAX_VALUE_OTHER_TYPES;
         };
     }
 }

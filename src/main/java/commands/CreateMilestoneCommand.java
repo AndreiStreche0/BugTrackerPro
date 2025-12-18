@@ -10,9 +10,7 @@ import users.Developer;
 import users.User;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 
 /**
  * creates a new milestone for the app
@@ -63,8 +61,8 @@ public final class CreateMilestoneCommand extends Command {
             return createErrorNode("The user " + super.getUsername() + " doesn't exist.");
         }
         if (user.getRole() != UserRole.MANAGER) {
-            return createErrorNode("The user does not have permission to execute this command:" +
-                    " required role MANAGER; user role " + user.getRole() + ".");
+            return createErrorNode("The user does not have permission to execute this command:"
+                    + " required role MANAGER; user role " + user.getRole() + ".");
         }
         if (!correctPhase) {
             return createErrorNode("Milestones can only be created during development phase.");
@@ -90,8 +88,8 @@ public final class CreateMilestoneCommand extends Command {
                 return createErrorNode("Assigned developer is not a developer");
             }
         }
-        String notificationMessage = "New milestone " + milestone.getName() +
-                " has been created with due date " + milestone.getDueDate() + ".";
+        String notificationMessage = "New milestone " + milestone.getName()
+                + " has been created with due date " + milestone.getDueDate() + ".";
         if (milestone.getBlockingFor() != null) {
             for (String blockedMilestoneName : milestone.getBlockingFor()) {
                 Milestone blockedMilestone = appStorage.getMilestone(blockedMilestoneName);

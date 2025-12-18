@@ -9,18 +9,20 @@ import tickets.Ticket;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import enums.TicketType;
 import tickets.UIFeedback;
 
 public final class ResolutionEfficiencyMetric implements MetricBaseMethods {
+    public static final double MAX_VALUE_BUG = 70.0;
+    public static final double MAX_VALUE_OTHER_TYPES = 20.0;
+    public static final double BUG_MULTIPLIER = 10.0;
     /**
      * @param ticket ticket for the resolution efficiency metric
      * @return if the ticket is valid for the metric calculation
      */
     @Override
     public boolean isTicketValid(final Ticket ticket) {
-        return ticket.getState() == TicketStatus.RESOLVED ||
-                ticket.getState() == TicketStatus.CLOSED;
+        return ticket.getState() == TicketStatus.RESOLVED
+                || ticket.getState() == TicketStatus.CLOSED;
     }
     /**
      * calculates base score for resolution efficiency report
@@ -30,14 +32,16 @@ public final class ResolutionEfficiencyMetric implements MetricBaseMethods {
     @Override
     public double calculateBaseScore(final Ticket ticket) {
         long daysToResolve = calculateDaysToResolve(ticket);
-        if (daysToResolve == 0) daysToResolve = 1; // Avoid division by zero
+        if (daysToResolve == 0) {
+            daysToResolve = 1;
+        }
 
         switch (ticket.getType()) {
             case BUG:
                 Bug bug = (Bug) ticket;
                 int frequency = EnumToIntConverter.frequencyToInt(bug.getFrequency());
                 int severity = EnumToIntConverter.severityToInt(bug.getSeverity());
-                return ((frequency + severity) * 10.0) / daysToResolve;
+                return ((frequency + severity) * BUG_MULTIPLIER) / daysToResolve;
 
             case FEATURE_REQUEST:
                 FeatureRequest fr = (FeatureRequest) ticket;
@@ -75,9 +79,8 @@ public final class ResolutionEfficiencyMetric implements MetricBaseMethods {
     @Override
     public double getMaxValue(final TicketType type) {
         return switch (type) {
-            case BUG -> 70.0;
-            case FEATURE_REQUEST, UI_FEEDBACK -> 20.0;
-            default -> 100.0;
+            case BUG -> MAX_VALUE_BUG;
+            default -> MAX_VALUE_OTHER_TYPES;
         };
     }
 

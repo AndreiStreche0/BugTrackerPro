@@ -6,13 +6,18 @@ public enum Seniority {
     SENIOR("Senior");
     private final String name;
 
-    Seniority(String name) {
+    Seniority(final String name) {
         this.name = name;
     }
     public String getName() {
         return name;
     }
-    public static Seniority getType(String name) {
+
+    /**
+     * @param name string form of seniority
+     * @return the seniority type
+     */
+    public static Seniority getType(final String name) {
         for (Seniority seniority : Seniority.values()) {
             if (seniority.name.equalsIgnoreCase(name)) {
                 return seniority;

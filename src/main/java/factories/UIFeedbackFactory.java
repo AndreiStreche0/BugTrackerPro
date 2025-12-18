@@ -1,7 +1,9 @@
-package factory;
+package factories;
 
-import enums.*;
-import tickets.FeatureRequest;
+import enums.BusinessValue;
+import enums.BusinessPriority;
+import enums.ExpertiseArea;
+import enums.TicketStatus;
 import tickets.Ticket;
 import tickets.UIFeedback;
 
@@ -10,7 +12,7 @@ import java.util.Map;
 /**
  * creates a new UI feedback ticket
  */
-public class UIFeedbackFactory implements TicketFactory{
+public final class UIFeedbackFactory implements TicketFactory {
     /**
      * @param attributes all the ticket attributes given at input
      * @param id ticket id
@@ -20,7 +22,7 @@ public class UIFeedbackFactory implements TicketFactory{
     @Override
     public Ticket createTicket(final Map<String, Object> attributes, final int id,
                                final String timestamp) {
-        UIFeedback uiFeedback= new UIFeedback(timestamp);
+        UIFeedback uiFeedback = new UIFeedback(timestamp);
 
         uiFeedback.setId(id);
         uiFeedback.setTitle((String) attributes.get("title"));
@@ -33,21 +35,20 @@ public class UIFeedbackFactory implements TicketFactory{
         uiFeedback.setCreatedAt((String) attributes.get("timestamp"));
         uiFeedback.setState(TicketStatus.OPEN);
 
-        if(attributes.containsKey("uiElementId")) {
+        if (attributes.containsKey("uiElementId")) {
             uiFeedback.setUiElementId((String) attributes.get("uiElementId"));
         }
         uiFeedback.setBusinessValue(BusinessValue.valueOf(
                 (String) attributes.get("businessValue")));
-        uiFeedback.setUsabilityScore(Integer.parseInt
-                (attributes.get("usabilityScore").toString()));
-        if(attributes.containsKey("screenshotUrl")) {
+        uiFeedback.setUsabilityScore(Integer.parseInt(
+                attributes.get("usabilityScore").toString()));
+        if (attributes.containsKey("screenshotUrl")) {
             uiFeedback.setScreenshotUrl((String) attributes.get("screenshotUrl"));
         }
-        if(attributes.containsKey("suggestedFix")) {
+        if (attributes.containsKey("suggestedFix")) {
             uiFeedback.setSuggestedFix((String) attributes.get("suggestedFix"));
         }
         uiFeedback.setCreatedAt(timestamp);
-
         return uiFeedback;
     }
 }

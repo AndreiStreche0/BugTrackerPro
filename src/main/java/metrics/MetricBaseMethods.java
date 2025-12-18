@@ -9,23 +9,25 @@ import java.util.List;
  * interface containing all the methods necessary for metric calculation
  */
 public interface MetricBaseMethods {
+    double ROUNDER = 100.0;
+
     /**
      * @param ticket the ticket
      * @return if the ticket is valid for that metric calculation
      */
-    boolean isTicketValid(final Ticket ticket);
+    boolean isTicketValid(Ticket ticket);
 
     /**
      * @param ticket the ticket used
      * @return base score for metric calculation
      */
-    double calculateBaseScore(final Ticket ticket);
+    double calculateBaseScore(Ticket ticket);
 
     /**
      * @param type ticket type
      * @return the max value for that tickey type
      */
-    double getMaxValue(final TicketType type);
+    double getMaxValue(TicketType type);
 
     /**
      * @param baseScore the base value for that metric
@@ -33,8 +35,10 @@ public interface MetricBaseMethods {
      * @return the normalized value
      */
     default double normalizeScore(final double baseScore, final double maxValue) {
-        if (maxValue == 0) return 0.0;
-        return Math.min(100.0, (baseScore * 100.0) / maxValue);
+        if (maxValue == 0) {
+            return 0.0;
+        }
+        return Math.min(ROUNDER, (baseScore * ROUNDER) / maxValue);
     }
 
     /**
@@ -50,6 +54,6 @@ public interface MetricBaseMethods {
      * @return the value rounded out to 2 decimals
      */
     default double round(final double value) {
-        return Math.round(value * 100.0) / 100.0;
+        return Math.round(value * ROUNDER) / ROUNDER;
     }
 }

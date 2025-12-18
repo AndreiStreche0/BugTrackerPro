@@ -6,7 +6,7 @@ import users.Developer;
 /**
  * filter to check if the expertise area matches with the given one
  */
-public class ExpertiseAreaFilter implements Filter <Developer> {
+public class ExpertiseAreaFilter implements Filter<Developer> {
     private final ExpertiseArea expertiseArea;
 
     public ExpertiseAreaFilter(final String expertiseAreaString) {
