@@ -61,7 +61,9 @@ public final class AssignTicketCommand extends Command {
         }
         Milestone currentMilestone = null;
         Developer developer = (Developer) user;
-
+        if (ticket == null) {
+            return createErrorNode("Ticket id is not valid");
+        }
         if (!developer.hasRequiredExpertise(ticket.getExpertiseArea())) {
             return createErrorNode("Developer " + developer.getUsername()
                     + " cannot assign ticket " + ticketId + " due to expertise area. Required: "
@@ -74,7 +76,6 @@ public final class AssignTicketCommand extends Command {
                     + errorSeniorityString(ticket) + "; Current: " + developer.getSeniority()
                     + ".");
         }
-
         if (ticket.getState() != TicketStatus.OPEN) {
             return createErrorNode("Only OPEN tickets can be assigned.");
         }

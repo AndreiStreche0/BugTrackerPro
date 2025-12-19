@@ -37,8 +37,6 @@ public final class App {
     public static void run(final String inputPath, final String outputPath) {
         List<ObjectNode> outputs = new ArrayList<>();
         processing.AppStorage.getInstance().reset();
-        factories.FactoryService.getInstance().reset();
-
         /*
             TODO 1 :
             Load initial user data and commands. we strongly recommend using jackson library.

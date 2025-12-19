@@ -96,7 +96,20 @@ public final class ViewTicketHistoryCommand extends Command {
             ticketNode.put("title", ticket.getTitle());
             ticketNode.put("status", ticket.getState().toString());
 
-            ticketNode.set("actions", mapper.valueToTree(ticket.getHistory()));
+            List<TicketHistory> validHistory = new ArrayList<>(ticket.getHistory());
+            if (user.getRole() == UserRole.DEVELOPER) {
+                int finalIndex = validHistory.size();
+                for (int i = 0; i < validHistory.size(); i++) {
+                    TicketHistory history = validHistory.get(i);
+                    if (history.getAction().equals("DE-ASSIGNED")
+                            && user.getUsername().equals(history.getBy())) {
+                        finalIndex = i + 1;
+                    }
+                }
+                validHistory = validHistory.subList(0, finalIndex);
+            }
+
+            ticketNode.set("actions", mapper.valueToTree(validHistory));
 
             if (ticket.getComments() == null || ticket.getComments().isEmpty()) {
                 ticketNode.putArray("comments");

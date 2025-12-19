@@ -76,6 +76,16 @@ public final class TicketHistory {
     public static TicketHistory removedFromDev(final String by, final String timestamp) {
         return new TicketHistory("REMOVED_FROM_DEV", by, timestamp);
     }
+    /**
+     * makes new TicketHistory object needed for ticket history list logic
+     * @param timestamp timestamp of change
+     * @return ticket history object
+     */
+    public static TicketHistory systemRemove(final String devUsername, final String timestamp) {
+        TicketHistory history = new TicketHistory("REMOVED_FROM_DEV", "system", timestamp);
+        history.from = devUsername;
+        return history;
+    }
 
     public String getAction() {
         return action;

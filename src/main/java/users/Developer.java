@@ -29,9 +29,18 @@ public final class Developer extends User implements Observer {
         this.performanceScore = 0.0;
     }
 
+    /**
+     * adds ticket to the assigned list
+     * @param assignedTicket the ticket
+     */
     public void addAssignedTicket(Ticket assignedTicket) {
         this.assignedTickets.add(assignedTicket);
     }
+
+    /**
+     * removes ticket from the assigned ticket list
+     * @param assignedTicket the ticket
+     */
     public void removeAssignedTicket(Ticket assignedTicket) {
         this.assignedTickets.remove(assignedTicket);
     }
@@ -61,13 +70,28 @@ public final class Developer extends User implements Observer {
     public List<String> getNotifications() {
         return notifications;
     }
+
+    /**
+     * adds new notification to notification list
+     * @param notification the notification being sent
+     */
     @Override
     public void update(String notification) {
         this.notifications.add(notification);
     }
+
+    /**
+     * removes all notifications
+     */
     public void clearNotifications() {
         this.notifications.clear();
     }
+
+    /**
+     * checks if the developer has the required expertise for the given expertiseArea of a ticket
+     * @param ticketArea the expertiseArea
+     * @return true if they do
+     */
     public boolean hasRequiredExpertise(ExpertiseArea ticketArea) {
         if (this.expertise == ExpertiseArea.FULLSTACK) {
             return true;
@@ -81,6 +105,11 @@ public final class Developer extends User implements Observer {
             default -> false;
         };
     }
+    /**
+     * checks if the developer has the required seniority for the given priority of a ticket
+     * @param ticketPriority the priority
+     * @return true if they do
+     */
     public boolean hasRequiredSeniority (BusinessPriority ticketPriority) {
         return switch (this.seniority) {
             case Seniority.SENIOR -> true;
@@ -89,8 +118,5 @@ public final class Developer extends User implements Observer {
                     ticketPriority == BusinessPriority.MEDIUM;
             default -> false;
         };
-    }
-    public void calculatePerformanceScore() {
-        this.performanceScore = 0.0;
     }
 }

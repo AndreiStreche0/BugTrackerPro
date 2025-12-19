@@ -145,6 +145,14 @@ public final class Milestone extends Observers {
             if (ticket.getState() != TicketStatus.CLOSED) {
                 ticket.setBusinessPriority(BusinessPriority.CRITICAL);
             }
+            if (ticket.getAssignedTo() != null && ticket.getAssignedTo().getRole()
+                    == UserRole.DEVELOPER) {
+                if (!((Developer) ticket.getAssignedTo()).hasRequiredSeniority(ticket.getBusinessPriority())) {
+                    ticket.setState(TicketStatus.OPEN);
+                    ticket.setAssignedTo(null);
+                    ticket.setAssignedAt(null);
+                }
+            }
         }
         this.sendNotifications("Milestone " + this.name + " is due tomorrow. All unresolved"
                 + " tickets are now CRITICAL.");

@@ -35,7 +35,9 @@ public final class AppStorage {
         ticket.setId(tickets.size());
         tickets.add(ticket);
     }
-
+    public void removeTicket(final Ticket ticket) {
+        tickets.remove(ticket);
+    }
     /**
      * resets the app storage
      */

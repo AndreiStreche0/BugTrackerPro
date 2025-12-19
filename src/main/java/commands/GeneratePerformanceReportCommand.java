@@ -92,20 +92,6 @@ public final class GeneratePerformanceReportCommand extends Command {
         output.put("command", "generatePerformanceReport");
         output.put("username", super.getUsername());
         output.put("timestamp", super.getTimestamp());
-        for (Ticket ticket : appStorage.getTickets()) {
-
-            if (ticket.getAssignedTo() != null) {
-                System.out.println("developers is: " + ticket.getAssignedTo().getUsername()
-                        + " and has the tickets: ");
-                System.out.println(ticket.getTitle() + " with id " + ticket.getId()
-                        + " and state " + ticket.getState());
-            } else {
-                System.out.println("developers not existent " + " and has the tickets: ");
-                System.out.println("ticket not assigned " +  " with id " + ticket.getId()
-                        + " and state " + ticket.getState());
-
-            }
-        }
         for (Developer developer : developers) {
             int cntBug = 0, cntFeatureReq = 0, cntUIFeedback = 0;
             int highPriorityTickets = 0;

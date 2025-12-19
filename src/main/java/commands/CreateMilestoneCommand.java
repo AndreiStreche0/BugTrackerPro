@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import enums.UserRole;
 import milestones.Milestone;
 import processing.AppStorage;
+import tickets.Ticket;
 import tickets.TicketHistory;
 import users.Developer;
 import users.User;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -67,7 +69,14 @@ public final class CreateMilestoneCommand extends Command {
         if (!correctPhase) {
             return createErrorNode("Milestones can only be created during development phase.");
         }
+        List<Integer> existentTicketIds = new ArrayList<>();
         for (Integer ticketId : this.ticketIds) {
+            Ticket ticket = appStorage.getTicket(ticketId);
+            if (ticket != null) {
+                existentTicketIds.add(ticketId);
+            }
+        }
+        for (Integer ticketId : existentTicketIds) {
             Milestone assignedMilestone = appStorage.isTicketInMilestone(ticketId);
             if (assignedMilestone != null) {
                 return createErrorNode("Tickets " + ticketId + " already assigned to milestone "
@@ -78,7 +87,7 @@ public final class CreateMilestoneCommand extends Command {
         LocalDate due = LocalDate.parse(this.dueDate);
 
         Milestone milestone = new Milestone(this.name, this.blockingFor, this.dueDate,
-                super.getTimestamp(), ticketIds, this.assignedDevs, super.getUsername());
+                super.getTimestamp(), existentTicketIds, this.assignedDevs, super.getUsername());
         appStorage.addMilestone(milestone);
         for (String developerName : this.assignedDevs) {
             User subordonate = appStorage.findUser(developerName);
@@ -98,10 +107,12 @@ public final class CreateMilestoneCommand extends Command {
                 }
             }
         }
-        for (int id : milestone.getTicketIds()) {
+        for (int k = 0; k < milestone.getTicketIds().size(); k++) {
+            int id = milestone.getTicketIds().get(k);
+            Ticket ticket = appStorage.getTicket(id);
             TicketHistory history = TicketHistory.addedToMilestone(milestone.getName(),
                     milestone.getCreatedBy(), super.getTimestamp());
-            appStorage.getTicket(id).addHistory(history);
+            ticket.addHistory(history);
         }
         milestone.setLastAutomaticUpdate(LocalDate.parse(super.getTimestamp()));
         milestone.sendNotifications(notificationMessage);

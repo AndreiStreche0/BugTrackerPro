@@ -47,8 +47,6 @@ public final class ReportTicketCommand extends Command {
      * @return the output node
      */
     public ObjectNode execute(final boolean correctPhase) {
-        Ticket newTicket = ticketService.createTicket((String) ticketParameters.get("type"),
-                ticketParameters, super.getTimestamp());
         ObjectNode output = mapper.createObjectNode();
         if (super.getUsername() == null || appStorage.findUser(super.getUsername()) == null) {
             return createErrorNode("The user " + super.getUsername() + " does not exist.");
@@ -62,13 +60,17 @@ public final class ReportTicketCommand extends Command {
             return createErrorNode("Tickets can only be reported during testing phases.");
         }
         String reporterName = (String) ticketParameters.get("reportedBy");
-        if (reporterName != null && reporterName.isEmpty()) {
-            if (newTicket.getType() == TicketType.BUG) {
-                newTicket.setBusinessPriority(BusinessPriority.LOW);
-            } else {
-                return createErrorNode("Anonymous reports are only allowed for tickets of type"
-                        + " BUG.");
-            }
+
+        if (reporterName != null && reporterName.isEmpty()
+                && !((String) ticketParameters.get("type")).equals("BUG")) {
+            return createErrorNode("Anonymous reports are only allowed for tickets of type"
+                    + " BUG.");
+        }
+        Ticket newTicket = ticketService.createTicket((String) ticketParameters.get("type"),
+                ticketParameters, appStorage.getTickets().size(), super.getTimestamp());
+        if (reporterName != null && reporterName.isEmpty()
+                && newTicket.getType() == TicketType.BUG) {
+            newTicket.setBusinessPriority(BusinessPriority.LOW);
         }
         appStorage.addTicket(newTicket);
         return null;

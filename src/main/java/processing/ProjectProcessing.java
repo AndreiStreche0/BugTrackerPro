@@ -3,11 +3,15 @@ package processing;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import commands.Command;
 import enums.AppPhase;
+import enums.TicketStatus;
 import milestones.Milestone;
 import processing.states.ClosedPhaseState;
 import processing.states.DevelopmentPhaseState;
 import processing.states.StateSpecificActions;
 import processing.states.TestingPhaseState;
+import tickets.Ticket;
+import tickets.TicketHistory;
+import users.Developer;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -60,7 +64,7 @@ public final class ProjectProcessing {
                 milestone.setWarnedOfDeadline(true);
             }
 
-            int daysSinceCreationCurrent = (int) ChronoUnit.DAYS.between(lastChange, current) + 1;
+            int daysSinceCreationCurrent = (int) ChronoUnit.DAYS.between(lastChange, current);
             int increments = Math.max(0, daysSinceCreationCurrent / AVG_DIVIDER);
             LocalDate newUpdateDate = current.minusDays(daysSinceCreationCurrent % AVG_DIVIDER);
             for (int k = 0; k < increments; k++) {
@@ -71,6 +75,25 @@ public final class ProjectProcessing {
             if (increments > 0) {
                 LocalDate newLastUpdate = lastChange.plusDays(increments * AVG_DIVIDER);
                 milestone.setLastAutomaticUpdate(newLastUpdate);
+            }
+            if (!milestone.isBlocked()) {
+                for (int ticketId : milestone.getTicketIds()) {
+                    Ticket ticket = appStorage.getTicket(ticketId);
+
+                    if (ticket != null && ticket.getAssignedTo() != null) {
+
+                        Developer developer = (Developer) ticket.getAssignedTo();
+
+                        if (!developer.hasRequiredSeniority(ticket.getBusinessPriority())) {
+                            developer.removeAssignedTicket(ticket);
+                            TicketHistory history = TicketHistory.systemRemove(
+                                    developer.getUsername(), currentTimestamp);
+                            ticket.addHistory(history);
+                            ticket.setAssignedTo(null);
+                            ticket.setState(TicketStatus.OPEN);
+                        }
+                    }
+                }
             }
         }
     }

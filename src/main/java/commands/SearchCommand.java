@@ -170,7 +170,6 @@ public final class SearchCommand extends Command {
                 developerNode.put("username", developer.getUsername());
                 developerNode.put("expertiseArea", developer.getExpertise().toString());
                 developerNode.put("seniority", developer.getSeniority().toString());
-                developer.calculatePerformanceScore();
                 developerNode.put("performanceScore", developer.getPerformanceScore());
                 developerNode.put("hireDate", developer.getHireDate());
                 filteredDevelopers.add(developerNode);
